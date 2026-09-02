@@ -36,9 +36,14 @@ pnpm format       # prettier --write
 
 This repo is self-documenting for work across many sessions. Start here:
 
-1. `docs/CURRENT_STATE.md` — operational source of truth (created in Phase 0.5)
-2. `docs/ROADMAP.md` — phased plan and progress
-3. `docs/ARCHITECTURE.md` — how the system fits together
-4. `CLAUDE.md` — working rules (created in Phase 0.6)
+1. [`docs/CURRENT_STATE.md`](docs/CURRENT_STATE.md) — operational source of truth
+2. [`docs/ROADMAP.md`](docs/ROADMAP.md) — phased plan and progress
+3. [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — how the system fits together
+4. [`docs/PROJECT_VISION.md`](docs/PROJECT_VISION.md) — why this exists, what "good" means
+5. [`docs/DECISIONS.md`](docs/DECISIONS.md) · [`docs/RISKS.md`](docs/RISKS.md) · [`docs/GIT_WORKFLOW.md`](docs/GIT_WORKFLOW.md)
+6. `CLAUDE.md` — working rules (real version written in Phase 0.6)
+
+Phase-specific docs (`DESIGN_SYSTEM`, `UI_SYSTEM`, `ASSET_PIPELINE`, `PERFORMANCE`) are
+placeholders until their phase. Handoffs live in `docs/handoffs/`.
 
 `references/` holds concept/inspiration material only and is never shipped.
