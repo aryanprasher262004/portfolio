@@ -16,7 +16,7 @@
 - [x] **0.3** Project scaffold — Next 16 + strict TS + CSS Modules + tokens + ESLint/Prettier; verified (lint/typecheck/build/dev)
 - [x] **0.4** Git structure — `main` + `feat/*` (no `dev`); `docs/GIT_WORKFLOW.md`; first commit pushed
 - [x] **0.5** Documentation system — 6 load-bearing docs + 4 placeholders + `handoffs/README.md`; links/format/build verified
-- [ ] **0.6** Claude Code configuration — research current best practice; write real `CLAUDE.md` + minimal rules
+- [x] **0.6** Claude Code configuration — concise `CLAUDE.md` (93 lines), `.claude/rules/docs-maintenance.md` (path-scoped), `.claude/skills/continue/SKILL.md`; no agents/hooks/MCP
 - [ ] **0.7** Deployment baseline — connect repo to Vercel (dashboard); confirm production pipeline
 - [ ] **0.8** Foundation verification — lint / typecheck / build / deploy check; `PHASE_0_HANDOFF.md`
 

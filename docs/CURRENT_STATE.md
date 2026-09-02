@@ -4,31 +4,32 @@
 > Update at the end of every meaningful subphase.
 
 **Current Phase:** 0 — Foundation
-**Current Subphase:** 0.6 — Claude Code configuration (next)
-**Status:** 0.5 COMPLETE — awaiting go-ahead for 0.6
+**Current Subphase:** 0.7 — Deployment baseline (next)
+**Status:** 0.6 COMPLETE — awaiting go-ahead for 0.7
 **Current Branch:** `feat/foundation-docs`
 
 ## Last Completed
 
-- 0.5 — `docs/` system: 6 load-bearing docs (PROJECT_VISION, ARCHITECTURE, ROADMAP,
-  CURRENT_STATE, DECISIONS, RISKS) fully written; 4 placeholders (DESIGN_SYSTEM,
-  UI_SYSTEM, ASSET_PIPELINE, PERFORMANCE); `handoffs/README.md` with template.
-  DEC-001…DEC-012 backfilled. Internal links / prettier / build all verified.
+- 0.6 — Claude Code config: root `CLAUDE.md` (93 lines: 9 rules, non-negotiables,
+  response format, git rules, docs map); `.claude/rules/docs-maintenance.md`
+  (path-scoped to `docs/**` + `CLAUDE.md`); `.claude/skills/continue/SKILL.md`
+  (resume-from-state workflow). No agents/hooks/MCP. `.gitignore` +=
+  `.claude/settings.local.json`.
+- 0.5 — `docs/` system: 6 load-bearing docs + 4 placeholders + `handoffs/README.md`;
+  DEC-001…DEC-012 backfilled.
 - 0.4 — Git workflow documented; first commit `b85b232` pushed to `origin/main`.
-- 0.3 — Next 16 App Router scaffold; lint / typecheck / build / dev all green.
 
 ## Currently Working On
 
-- Nothing in progress. `feat/foundation-docs` holds 0.5 (and will carry 0.6).
+- Nothing in progress. `feat/foundation-docs` holds 0.5–0.6 (and will carry 0.7–0.8).
 
 ## Next Exact Task
 
-- **0.6 — Claude Code configuration.** Research CURRENT Claude Code best practice
-  (CLAUDE.md, skills, agents, commands, hooks, MCP) via web/docs. Then write a
-  concise real `CLAUDE.md` + minimal "search-before-create / session-start /
-  handoff" rules. **Do NOT add agents/hooks/MCP without a concrete need** (owner
-  decision 7). The framework-generated `AGENTS.md` stays; our `CLAUDE.md` replaces
-  the `@AGENTS.md` stub and can reference it.
+- **0.7 — Deployment baseline.** Owner connects the GitHub repo to Vercel via the
+  Vercel dashboard (no CLI login — owner decision 9). Confirm: production deploy of
+  `main` succeeds, PR preview deploys work, Node 22 picked up from `.nvmrc`, build
+  command `pnpm build`. Add any needed `vercel.json` only if a real need appears.
+  Then 0.8 — foundation verification + `docs/handoffs/PHASE_0_HANDOFF.md`.
 
 ## Blockers
 
@@ -40,21 +41,19 @@
 
 - `pnpm-workspace.yaml` disables native builds for `sharp` and `unrs-resolver`
   (pnpm 11 default). Fine for Vercel; revisit in Phase 9 if self-hosting images.
-- `CLAUDE.md` is currently the framework-generated stub (`@AGENTS.md`). Real one
-  written in 0.6.
 
 ## Important Files
 
 - `docs/` — all project memory. Start here every session.
+- `CLAUDE.md` (imports `AGENTS.md`) · `.claude/rules/` · `.claude/skills/`
 - `src/app/{layout,page}.tsx`, `src/app/globals.css`, `src/styles/tokens.css`
 - `AGENTS.md` — framework-managed (Next 16 "read the bundled docs" warning)
 - `next.config.ts`, `tsconfig.json`, `eslint.config.mjs`
 
 ## Verification
 
-- Last full check (0.3): `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` ✅
-  (3 static routes) · `pnpm dev` ✅ (HTTP 200).
-- 0.5 touches no code; re-run build once to confirm nothing regressed.
+- 0.6 full check: `pnpm format:check` ✅ · `pnpm lint` ✅ · `pnpm typecheck` ✅ ·
+  `pnpm build` ✅ (3 static routes, no regression). No runtime code changed.
 
 ## Notes For Next Session
 
