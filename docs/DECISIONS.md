@@ -141,3 +141,25 @@ mobile · asset difficulty · maintainability · interaction freedom.
 install `three` / `@react-three/fiber` / `@react-three/drei` before this is decided.
 
 **STOP for owner approval before beginning the production implementation.**
+
+**Update (Phase 0.8):** the owner now has reference assets ready for Phase 1 (desk/PC
+images, blank-monitor concept, desktop-on concept, Clip 1 = PC power-on, Clip 2 =
+monitor wake / camera push). A **video + HTML/CSS + GSAP hybrid** looks promising —
+but it is **not selected**. Phase 1 still objectively compares 2.5D · video/pre-rendered
+· real 3D · hybrid. Decision stays deferred to Phase 1.8.
+
+---
+
+## DEC-013 — Deployment: Vercel via dashboard Git integration
+
+**Decision:** The GitHub repo is connected to Vercel through the Vercel dashboard Git
+integration (not the Vercel CLI). `main` is the production branch. Framework preset
+auto-detected as Next.js; build command `pnpm build`; Node from `.nvmrc` (22).
+Production: `https://portfolio-delta-sand-34.vercel.app`.
+**Reason:** Zero-config, automatic production deploys on push to `main`, automatic
+preview deploys per PR. Owner decision 9 (no CLI login).
+**Alternatives:** Vercel CLI deploys; Netlify; GitHub Pages; self-host.
+**Rejected because:** CLI adds a local auth/token to manage; other hosts lose the
+Next.js-native integration.
+**Not done (deliberately):** no `vercel.json` (no need yet), no Analytics / Speed
+Insights / other Vercel add-ons, no custom domain. Revisit in Phase 11.

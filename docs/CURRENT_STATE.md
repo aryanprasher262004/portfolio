@@ -3,39 +3,44 @@
 > Operational source of truth. Keep this CURRENT, not a history book.
 > Update at the end of every meaningful subphase.
 
-**Current Phase:** 0 — Foundation
-**Current Subphase:** 0.7 — Deployment baseline (next)
-**Status:** 0.6 COMPLETE — awaiting go-ahead for 0.7
-**Current Branch:** `feat/foundation-docs`
+**Current Phase:** 1 — Visual + technical prototypes (not started)
+**Current Subphase:** 1.1 — Reference analysis (next)
+**Status:** PHASE 0 COMPLETE — awaiting go-ahead for Phase 1
+**Current Branch:** `feat/foundation-docs` (holds all Phase 0 doc/config work; not
+yet merged to `main`)
 
 ## Last Completed
 
-- 0.6 — Claude Code config: root `CLAUDE.md` (93 lines: 9 rules, non-negotiables,
-  response format, git rules, docs map); `.claude/rules/docs-maintenance.md`
-  (path-scoped to `docs/**` + `CLAUDE.md`); `.claude/skills/continue/SKILL.md`
-  (resume-from-state workflow). No agents/hooks/MCP. `.gitignore` +=
-  `.claude/settings.local.json`.
-- 0.5 — `docs/` system: 6 load-bearing docs + 4 placeholders + `handoffs/README.md`;
-  DEC-001…DEC-012 backfilled.
-- 0.4 — Git workflow documented; first commit `b85b232` pushed to `origin/main`.
+- **Phase 0 — Foundation, complete.** Scaffold (Next 16 + strict TS + CSS Modules +
+  tokens + ESLint/Prettier, pnpm), git workflow (`main` + `feat/*`), full `docs/`
+  system, Claude Code config (`CLAUDE.md` + rule + `/continue` skill), and the
+  GitHub→Vercel deploy pipeline (`main` = production). See
+  `docs/handoffs/PHASE_0_HANDOFF.md`.
 
 ## Currently Working On
 
-- Nothing in progress. `feat/foundation-docs` holds 0.5–0.6 (and will carry 0.7–0.8).
+- Nothing in progress.
 
 ## Next Exact Task
 
-- **0.7 — Deployment baseline.** Owner connects the GitHub repo to Vercel via the
-  Vercel dashboard (no CLI login — owner decision 9). Confirm: production deploy of
-  `main` succeeds, PR preview deploys work, Node 22 picked up from `.nvmrc`, build
-  command `pnpm build`. Add any needed `vercel.json` only if a real need appears.
-  Then 0.8 — foundation verification + `docs/handoffs/PHASE_0_HANDOFF.md`.
+- **Phase 1.1 — Reference analysis.** Owner has assets ready (see below). Study them
+  and document: composition, colour, depth, lighting, pixel density, monitor
+  proportions, interaction opportunities. Output goes into a Phase 1 working doc
+  (not yet created). Do NOT write production code, do NOT install `three`/R3F, do
+  NOT pick a rendering approach — that is Phase 1.8 / DEC-012.
 
 ## Blockers
 
-- None for Phase 0.
-- **Phase 1.1 needs the reference images** — owner will provide before Phase 1.
-  Drop them in `references/concept/`.
+- None. Reference assets are ready (owner confirmed at end of Phase 0). They need to
+  be placed in `references/concept/` and `references/experiments/`.
+
+## Assets available for Phase 1 (references / prototypes — NOT final production assets)
+
+- PC / desk reference images
+- Blank-monitor concept
+- Desktop-on concept
+- Clip 1 — PC power-on animation
+- Clip 2 — monitor wake / camera-push animation
 
 ## Known Issues
 
@@ -45,22 +50,32 @@
 ## Important Files
 
 - `docs/` — all project memory. Start here every session.
-- `CLAUDE.md` (imports `AGENTS.md`) · `.claude/rules/` · `.claude/skills/`
+- `CLAUDE.md` (imports `AGENTS.md`) · `.claude/rules/` · `.claude/skills/continue/`
 - `src/app/{layout,page}.tsx`, `src/app/globals.css`, `src/styles/tokens.css`
 - `AGENTS.md` — framework-managed (Next 16 "read the bundled docs" warning)
 - `next.config.ts`, `tsconfig.json`, `eslint.config.mjs`
+- `docs/handoffs/PHASE_0_HANDOFF.md`
 
-## Verification
+## Verification (Phase 0.8, final)
 
-- 0.6 full check: `pnpm format:check` ✅ · `pnpm lint` ✅ · `pnpm typecheck` ✅ ·
-  `pnpm build` ✅ (3 static routes, no regression). No runtime code changed.
+- `pnpm install --frozen-lockfile` ✅ up to date
+- `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` ✅ (3 static routes) ·
+  `pnpm format:check` ✅
+- Production URL `https://portfolio-delta-sand-34.vercel.app` ✅ HTTP 200, correct
+  title + content
+- Dependency audit ✅ only `next`/`react`/`react-dom` + standard dev tooling; **no
+  `three`/`@react-three/*`**; only `pnpm-lock.yaml`
+- Secrets ✅ no `.env`/`.pem`/key files tracked; `.gitignore` covers them
+- Node pin ✅ `.nvmrc` = 22, `engines.node` `>=22`, `engine-strict=true`
 
 ## Notes For Next Session
 
-- Rendering architecture (real 3D / 2.5D / video / hybrid) is **DEFERRED to Phase
-  1.8**. Do NOT install `three` / R3F / drei before then. See `ARCHITECTURE.md`
-  § Deferred and `DECISIONS.md` DEC-012.
+- **A video + HTML/CSS + GSAP hybrid looks promising but is NOT selected.** Phase 1
+  must still objectively compare 2.5D · video/pre-rendered · real 3D · hybrid.
+  Decision is deferred to Phase 1.8 / DEC-012.
+- Rendering architecture deferred — do NOT install `three` / R3F / drei before 1.8.
 - The insulation rule (DEC-006): OS/apps are plain DOM in a container; only
   `features/scene/**` touches rendering. Never import scene into os/apps.
 - YAGNI on directories — create a folder in the phase that first needs it.
 - pnpm only. Node 22. Six apps, not eight. One window component.
+- `feat/foundation-docs` still needs to be merged to `main` (owner decides when).

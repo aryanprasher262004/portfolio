@@ -5,18 +5,18 @@
 
 ## Stack
 
-| Concern                          | Choice                                             | Notes                                                                                |
-| -------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Framework                        | Next.js 16 (App Router)                            | Client-first, **single route** (`/`). SSR/RSC features largely unused by design.     |
-| UI                               | React 19                                           |                                                                                      |
-| Language                         | TypeScript, `strict` + `noUncheckedIndexedAccess`  |                                                                                      |
-| Package manager                  | pnpm (only)                                        | `pnpm-lock.yaml` is the sole lockfile. Never npm/yarn/bun.                           |
-| Styling                          | CSS Modules + CSS custom-property design tokens    | No CSS-in-JS runtime. Tokens in `src/styles/tokens.css` (provisional until Phase 3). |
-| State                            | Zustand (sliced) + hand-rolled typed state machine | No XState. Added in the phase that needs it.                                         |
-| Animation                        | GSAP (+ `@gsap/react`)                             | Single animation library. No Framer Motion. CSS for micro-interactions.              |
-| Rendering (desk/monitor visuals) | **UNDECIDED**                                      | Phase 1 compares real 3D / 2.5D / video / hybrid. No 3D deps installed yet.          |
-| Deploy                           | Vercel                                             | `main` = production. PR preview deploys.                                             |
-| Node                             | 22 (`.nvmrc`); `engines` floor `>=22`              |                                                                                      |
+| Concern                          | Choice                                             | Notes                                                                                                   |
+| -------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Framework                        | Next.js 16 (App Router)                            | Client-first, **single route** (`/`). SSR/RSC features largely unused by design.                        |
+| UI                               | React 19                                           |                                                                                                         |
+| Language                         | TypeScript, `strict` + `noUncheckedIndexedAccess`  |                                                                                                         |
+| Package manager                  | pnpm (only)                                        | `pnpm-lock.yaml` is the sole lockfile. Never npm/yarn/bun.                                              |
+| Styling                          | CSS Modules + CSS custom-property design tokens    | No CSS-in-JS runtime. Tokens in `src/styles/tokens.css` (provisional until Phase 3).                    |
+| State                            | Zustand (sliced) + hand-rolled typed state machine | No XState. Added in the phase that needs it.                                                            |
+| Animation                        | GSAP (+ `@gsap/react`)                             | Single animation library. No Framer Motion. CSS for micro-interactions.                                 |
+| Rendering (desk/monitor visuals) | **UNDECIDED**                                      | Phase 1 compares real 3D / 2.5D / video / hybrid. No 3D deps installed yet.                             |
+| Deploy                           | Vercel (dashboard Git integration, DEC-013)        | `main` = production: `portfolio-delta-sand-34.vercel.app`. PR previews. No `vercel.json` / add-ons yet. |
+| Node                             | 22 (`.nvmrc`); `engines` floor `>=22`              |                                                                                                         |
 
 Rationale for each is logged in `DECISIONS.md`.
 

@@ -9,16 +9,16 @@
 
 ---
 
-## Phase 0 — Foundation
+## Phase 0 — Foundation ✅ COMPLETE
 
 - [x] **0.1** Repository inspection — greenfield repo, pnpm/Node present, empty public remote
 - [x] **0.2** Product / architecture confirmation — foundation decisions locked; rendering deferred
 - [x] **0.3** Project scaffold — Next 16 + strict TS + CSS Modules + tokens + ESLint/Prettier; verified (lint/typecheck/build/dev)
 - [x] **0.4** Git structure — `main` + `feat/*` (no `dev`); `docs/GIT_WORKFLOW.md`; first commit pushed
 - [x] **0.5** Documentation system — 6 load-bearing docs + 4 placeholders + `handoffs/README.md`; links/format/build verified
-- [x] **0.6** Claude Code configuration — concise `CLAUDE.md` (93 lines), `.claude/rules/docs-maintenance.md` (path-scoped), `.claude/skills/continue/SKILL.md`; no agents/hooks/MCP
-- [ ] **0.7** Deployment baseline — connect repo to Vercel (dashboard); confirm production pipeline
-- [ ] **0.8** Foundation verification — lint / typecheck / build / deploy check; `PHASE_0_HANDOFF.md`
+- [x] **0.6** Claude Code configuration — concise `CLAUDE.md` (~86 lines), `.claude/rules/docs-maintenance.md` (path-scoped), `.claude/skills/continue/SKILL.md`; no agents/hooks/MCP
+- [x] **0.7** Deployment baseline — GitHub→Vercel pipeline live (DEC-013); `main` = production, `portfolio-delta-sand-34.vercel.app` Ready; no `vercel.json`, no add-ons
+- [x] **0.8** Foundation verification — install/lint/typecheck/build/format/prod-URL/secrets/deps all pass; `docs/handoffs/PHASE_0_HANDOFF.md`
 
 **Exit:** clean project · docs established · AI-session continuity established · deployment works · no unnecessary 3D architecture.
 
