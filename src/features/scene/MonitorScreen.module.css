@@ -1,0 +1,64 @@
+.monitor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.surface,
+.clip,
+.blackout,
+.glare {
+  position: absolute;
+}
+
+/* solid black screen "glass" — covers any artwork white behind the OS */
+.surface {
+  background: #080809;
+  z-index: 1;
+}
+
+/* where the OS renders — aspect matches OS_LOGICAL so it fills with no bars */
+.clip {
+  overflow: hidden;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.osRoot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  background: var(--os-bg, #10131a);
+}
+
+/* backlight-off cover; fades on monitor wake */
+.blackout {
+  z-index: 3;
+  background: #050506;
+  opacity: 0;
+  transition: opacity 650ms ease;
+  pointer-events: none;
+}
+.monitor[data-awake="false"] .blackout {
+  opacity: 1;
+}
+
+/* faint glass sheen */
+.glare {
+  z-index: 4;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.045) 0%,
+    rgba(255, 255, 255, 0.014) 22%,
+    rgba(255, 255, 255, 0) 46%
+  );
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blackout {
+    transition: none;
+  }
+}
