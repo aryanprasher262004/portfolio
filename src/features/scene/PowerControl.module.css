@@ -12,20 +12,26 @@
 
 .hotspot:focus-visible {
   outline: 2px solid var(--scene-accent-warm);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
-.glow {
+/* soft glowing ring — always faintly visible, gentle idle pulse */
+.ring {
   position: absolute;
-  inset: -30% -20%;
+  top: 50%;
+  left: 50%;
+  width: 128%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    color-mix(in srgb, var(--scene-accent-warm) 55%, transparent) 0%,
-    transparent 70%
+    color-mix(in srgb, var(--scene-accent-warm) 42%, transparent) 0%,
+    color-mix(in srgb, var(--scene-accent-warm) 12%, transparent) 45%,
+    transparent 72%
   );
-  opacity: 0;
-  transition: opacity 200ms ease;
+  opacity: 0.5;
+  animation: pulse 2.6s ease-in-out infinite;
   pointer-events: none;
 }
 
@@ -33,17 +39,16 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 34%;
+  width: 40%;
   aspect-ratio: 1;
   translate: -50% -50%;
-  color: color-mix(in srgb, var(--scene-accent-warm) 80%, #fff);
-  opacity: 0;
-  scale: 0.7;
+  color: color-mix(in srgb, var(--scene-accent-warm) 70%, #fff);
+  opacity: 0.7;
+  filter: drop-shadow(0 0 3px var(--scene-accent-warm));
   transition:
-    opacity 180ms ease,
-    scale 180ms ease;
+    opacity 160ms ease,
+    scale 160ms ease;
   pointer-events: none;
-  filter: drop-shadow(0 0 4px var(--scene-accent-warm));
 }
 
 .glyph svg {
@@ -53,43 +58,52 @@
   image-rendering: pixelated;
 }
 
-.tooltip {
-  position: absolute;
-  top: -26px;
+.hint {
+  bottom: calc(100% + 8px);
   left: 50%;
-  translate: -50% 0;
-  padding: 2px 6px;
-  font: 10px var(--font-mono);
-  letter-spacing: 0.14em;
-  color: #f3ede2;
-  background: rgba(12, 10, 8, 0.9);
-  border: 1px solid
-    color-mix(in srgb, var(--scene-accent-warm) 60%, transparent);
-  border-radius: 3px;
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 160ms ease;
-  pointer-events: none;
+  translate: -50% 4px;
 }
 
-.hotspot:hover .glow,
-.hotspot:focus-visible .glow {
-  opacity: 1;
+/* hover / keyboard focus — stronger, no pulse */
+.hotspot:hover .ring,
+.hotspot:focus-visible .ring {
+  opacity: 0.95;
+  animation: none;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--scene-accent-warm) 60%, transparent) 0%,
+    transparent 70%
+  );
 }
 .hotspot:hover .glyph,
 .hotspot:focus-visible .glyph {
   opacity: 1;
-  scale: 1;
+  scale: 1.06;
 }
-.hotspot:hover .tooltip,
-.hotspot:focus-visible .tooltip {
+.hotspot:hover .hint,
+.hotspot:focus-visible .hint {
   opacity: 1;
+  translate: -50% 0;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.42;
+    scale: 0.94;
+  }
+  50% {
+    opacity: 0.68;
+    scale: 1.04;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .glow,
-  .glyph,
-  .tooltip {
+  .ring {
+    animation: none;
+    opacity: 0.6;
+  }
+  .glyph {
     transition: none;
   }
 }
