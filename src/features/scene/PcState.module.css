@@ -3,15 +3,17 @@
   pointer-events: none;
 }
 
-/* dark wash that kills the baked-in orange fan glow while the PC is "off".
-   masked so it fades to nothing at the edges — no visible rectangle. */
+/* darkens the baked-in orange fan glow while the PC is "off".
+   multiply barely touches the near-black tower, and a soft mask keeps it off
+   the wall — so there is no visible rectangle. */
 .off {
   position: absolute;
-  inset: -10% -16%;
-  background: #0a1119;
-  opacity: 0.82;
+  inset: -3% -4%;
+  background: #0a121c;
+  opacity: 1;
+  mix-blend-mode: multiply;
   transition: opacity 700ms ease;
-  mask-image: radial-gradient(72% 78% at 50% 46%, #000 46%, transparent 100%);
+  mask-image: radial-gradient(74% 80% at 50% 50%, #000 42%, transparent 100%);
 }
 
 .pc[data-powered="true"] .off {
@@ -21,12 +23,12 @@
 /* warm bloom that pulses once as the PC comes on */
 .bloom {
   position: absolute;
-  inset: 0;
-  border-radius: 12%;
+  inset: -12%;
+  border-radius: 20%;
   background: radial-gradient(
     circle at 50% 55%,
-    color-mix(in srgb, var(--scene-accent-warm) 70%, transparent) 0%,
-    transparent 65%
+    color-mix(in srgb, var(--scene-accent-warm) 62%, transparent) 0%,
+    transparent 62%
   );
   opacity: 0;
   mix-blend-mode: screen;
@@ -39,14 +41,14 @@
 @keyframes bloom {
   0% {
     opacity: 0;
-    scale: 0.9;
+    scale: 0.92;
   }
   35% {
-    opacity: 0.9;
-    scale: 1.05;
+    opacity: 0.85;
+    scale: 1.04;
   }
   100% {
-    opacity: 0.12;
+    opacity: 0.1;
     scale: 1;
   }
 }
@@ -57,6 +59,6 @@
   }
   .pc[data-powered="true"] .bloom {
     animation: none;
-    opacity: 0.12;
+    opacity: 0.1;
   }
 }

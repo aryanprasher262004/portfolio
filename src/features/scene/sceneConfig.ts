@@ -39,14 +39,14 @@ export const SCREEN_SURFACE_RECT = {
 export const OS_LOGICAL = { width: 1280, height: 740 } as const;
 
 /**
- * The PC tower body, as a fraction of the plate (used to darken it when off and
- * to bloom the fan glow on power-on).
+ * The PC tower's glass front, as a fraction of the plate — where the fan glow
+ * lives. Kept tight to the tower so the "off" wash doesn't spill onto the wall.
  */
 export const PC_RECT = {
-  left: 0.744,
-  top: 0.3,
-  width: 0.212,
-  height: 0.4,
+  left: 0.775,
+  top: 0.33,
+  width: 0.16,
+  height: 0.34,
 } as const;
 
 /** Clickable power hotspot — the top-front of the tower. */
@@ -59,10 +59,11 @@ export const POWER_HOTSPOT_RECT = {
 
 /* ---- framing ---------------------------------------------------------------- */
 
-/** DESK/INTRO: mild zoom past "fill width" so the setup uses the viewport well. */
-export const DESK_FILL = 1.08;
+/** DESK/INTRO: exactly fill the viewport width — no horizontal crop, so every
+ *  prop (incl. the flower at the far right of the plate) stays on screen. */
+export const DESK_FILL = 1;
 /** Fraction of the vertical overflow cropped from the TOP (rest from bottom). */
-export const DESK_TOP_CROP_FRAC = 0.36;
+export const DESK_TOP_CROP_FRAC = 0.32;
 
 /** MONITOR/WORK: target monitor-screen width as a fraction of the viewport. */
 export const WORK_SCREEN_WIDTH_FRAC = 0.82;
