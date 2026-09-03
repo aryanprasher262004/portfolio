@@ -163,3 +163,20 @@ preview deploys per PR. Owner decision 9 (no CLI login).
 Next.js-native integration.
 **Not done (deliberately):** no `vercel.json` (no need yet), no Analytics / Speed
 Insights / other Vercel add-ons, no custom domain. Revisit in Phase 11.
+
+---
+
+## DEC-014 — Experience state and view/framing state are decoupled
+
+**Decision:** Two independent state machines in `experienceStore`:
+`phase` (`idle | poweringOn | booting | login | desktop`) and `view`
+(`desk | monitor`). Powering on never moves the camera; only the user-operated
+focus control changes `view`. Any `phase` + `view` combination is valid
+(`desktop + desk` and `desktop + monitor` both allowed).
+**Reason:** The visitor should power the machine and then _choose_ whether to focus
+on the monitor, and freely enter/exit that focus afterwards (owner, Phase 1.4 spec).
+Coupling `view` to `phase` would force an unwanted auto-zoom on power-on and make
+exit awkward.
+**Alternatives:** single state enum where `DESKTOP` implies the monitor framing.
+**Rejected because:** removes the visitor's choice; makes "return to desk while the
+OS keeps running" impossible without a hack.

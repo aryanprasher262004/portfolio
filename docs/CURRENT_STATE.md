@@ -4,36 +4,40 @@
 > Update at the end of every meaningful subphase.
 
 **Current Phase:** 1 — Visual + technical prototypes
-**Current Subphase:** 1.4 — Power + monitor prototype (next)
-**Status:** 1.3 COMPLETE — awaiting go-ahead for 1.4
+**Current Subphase:** 1.5 — Monitor OS prototype (next)
+**Status:** 1.4 COMPLETE — awaiting go-ahead for 1.5
 **Current Branch:** `feat/foundation-docs` (Phase 0 + Phase 1 docs; not merged)
 
 ## Last Completed
 
-- **1.3 — Vertical prototype foundation.** `src/features/scene/`: `<Scene>` (client)
-  = aspect-preserving stage (never distorts) plus a GSAP camera between two framings
-  (`framing.ts`: DESK/INTRO contain+zoom, MONITOR/WORK screen ≈78% vw + readable OS).
-  `<MonitorScreen>` real-HTML overlay tracks the artwork (a black screen-surface rect
-  with the 1.6 OS rect inside). `<ScreenPlaceholder>` and `<SceneDevControls>` are
-  temporary. `experienceStore` (zustand). Verified: build/lint/typecheck/format green;
-  Playwright confirmed the push is smooth + monotonic at 1440/1366/1920; end-state
-  screenshots readable at all four target viewports. Deps: `gsap`, `@gsap/react`,
-  `zustand`, `playwright-core` (dev).
-- **1.2 — Prototype visual spec.** `PHASE_1_REFERENCE_ANALYSIS.md` § Phase 1.2.
-- **1.1 — Reference analysis.** Direction B (blue-grey); blank screen + HTML UI; six apps.
+- **1.4 — Power + monitor interaction.** Decoupled `phase` (idle→poweringOn→booting→
+  login→desktop) and `view` (desk/monitor) in `experienceStore` (DEC-014). Real power
+  interaction: `<PowerControl>` hotspot on the PC top-front (hover glyph + glow +
+  "POWER" tooltip) → `<PcState>` off-wash lifts + fan bloom → staged monitor wake
+  (`awake` derived) → boot. **No camera move on power.** `<FocusToggle>` (retro pixel
+  brackets, FOCUS ⇄ EXIT) inside the screen bottom-right drives a reversible GSAP
+  desk⇄monitor move; power stays on across it. Bezel tightened (SCREEN_RECT hugs the
+  glass, OS = 1280×740; screen ≈82% vw in focus). Framing switched to flex-centring +
+  cover-width + crop-bias so the scene uses the viewport. `app/icon.svg` added
+  (kills the favicon 404). Playwright-verified full flow at 1366/1440/1536/1920,
+  0 console errors, focus/restore stable across repeats.
+- **1.3 — Vertical prototype foundation.** `<Scene>` + aspect-preserving stage +
+  GSAP camera + `<MonitorScreen>` overlay. Deps: `gsap`, `@gsap/react`, `zustand`,
+  `playwright-core` (dev).
+- **1.1–1.2 — Reference analysis + prototype spec** (`PHASE_1_REFERENCE_ANALYSIS.md`).
 
 ## Currently Working On
 
-- Nothing in progress. `localhost:3000` serves the prototype; `?dev=push` triggers
-  the camera push, `?phase=poweredOn|booting|login|desktop` jumps to a framing state.
+- Nothing in progress. `localhost:3000` serves the prototype. Dev helpers:
+  `?phase=booting|login|desktop`, `?view=monitor`, plus the temp `<SceneDevControls>`
+  panel (bottom-left). Normal flow works without any of them.
 
 ## Next Exact Task
 
-- **1.4 — Power + monitor prototype**: power hotspot on the PC/monitor, PC power
-  state (fan glow), monitor wake (blackout fade), sequence power → wake → camera
-  push, handoff into the HTML monitor overlay; then test Clip 1 / Clip 2 vs the
-  faked version and keep a clip only if it clearly wins. Replace `<SceneDevControls>`
-  with the real interaction.
+- **1.5 — Monitor OS prototype**: loading screen (`LOADING 6 OF 6`), login screen,
+  login transition, desktop, six icons, taskbar / basic chrome — all real React in
+  the 1280×740 OS root. Note: `<FocusToggle>` currently sits where the taskbar will
+  go (bottom-right) — reconcile then.
 
 ## Blockers
 
@@ -58,20 +62,20 @@
 
 - `docs/` — all project memory. Start here every session.
 - `docs/PHASE_1_REFERENCE_ANALYSIS.md` — 1.1 findings + 1.2 spec
-- `src/features/scene/` — `Scene.tsx`, `framing.ts`, `sceneConfig.ts`,
-  `MonitorScreen.tsx` (+ temp `ScreenPlaceholder`, `SceneDevControls`)
-- `src/stores/experienceStore.ts` · `src/lib/{useViewportSize,useReducedMotion}.ts`
-- `src/styles/tokens.css` (added `--scene-*`) · `public/prototype/` (temp p6 + clips)
-- `CLAUDE.md` · `.claude/rules/` · `.claude/skills/continue/`
-- `references/concept/` + `references/experiments/` — concept assets
+- `src/features/scene/` — `Scene.tsx`, `framing.ts`, `sceneConfig.ts` (all rects +
+  tunables), `MonitorScreen.tsx`, `PowerControl.tsx`, `PcState.tsx`,
+  `FocusToggle.tsx` (+ temp `ScreenPlaceholder`, `SceneDevControls`)
+- `src/stores/experienceStore.ts` — `phase` + `view` (DEC-014)
+- `src/lib/{useViewportSize,useReducedMotion}.ts` · `src/app/icon.svg`
+- `src/styles/tokens.css` (`--scene-*`) · `public/prototype/` (temp p6 + clips)
 
-## Verification (1.3)
+## Verification (1.4)
 
 - `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` ✅ · `pnpm format:check` ✅
-- Playwright (real Chrome): camera push scale ramps 1.2 → ~1.87–2.07 monotonically,
-  eased, settles ~2.4s; no jump. Verified 1440×900 / 1366×768 / 1920×1080.
-- Screenshots (true-viewport headless): DESK + MONITOR framings readable and
-  correctly composited at 1440×900 / 1366×768 / 1536×864 / 1920×1080.
+- Playwright (real Chrome), full flow at 1366×768 / 1440×900 / 1536×864 / 1920×1080:
+  power → PC on → screen wakes with **desk framing unchanged** (scale 1.08 before and
+  after); focus → GSAP move to screen ≈82% vw, centred; restore → back to desk;
+  power stays on; focus/restore stable over repeat cycles; **0 console errors**.
 - Still **no `three`/`@react-three/*`**; pnpm-only; Node 22 pin intact.
 
 ## Notes For Next Session
