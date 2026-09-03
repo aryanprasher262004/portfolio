@@ -37,20 +37,22 @@ export function Scene() {
   const powerOn = useExperienceStore((s) => s.powerOn);
   const setPhase = useExperienceStore((s) => s.setPhase);
   const toggleView = useExperienceStore((s) => s.toggleView);
+  const setDevMode = useExperienceStore((s) => s.setDevMode);
 
   const powered = phase !== "idle";
   // Backlight: PC glows during `poweringOn`, screen wakes as boot begins.
   // No camera movement is tied to any of this — that is user-initiated only.
   const awake = powered && phase !== "poweringOn";
 
-  // Dev/testing: ?phase=booting , ?view=monitor
+  // Dev/testing query flags: ?dev=1 (control panel), ?phase=booting, ?view=monitor
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
+    if (q.get("dev") === "1") setDevMode(true);
     const p = q.get("phase");
     if (p && (PHASES as string[]).includes(p)) setPhase(p as Phase);
     if (q.get("view") === "monitor")
       useExperienceStore.getState().enterMonitor();
-  }, [setPhase]);
+  }, [setPhase, setDevMode]);
 
   const ready = vw > 0 && vh > 0;
   const framing = ready ? computeFraming(vw, vh, view) : null;

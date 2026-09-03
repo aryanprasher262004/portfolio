@@ -24,6 +24,10 @@ const PHASE_ORDER: Phase[] = [
 interface ExperienceState {
   phase: Phase;
   view: View;
+  /** Temporary: shows the dev control panel (enabled via `?dev=1`). */
+  devMode: boolean;
+
+  setDevMode: (on: boolean) => void;
 
   /** true once the machine is on (anything past idle). */
   isPowered: () => boolean;
@@ -45,6 +49,9 @@ interface ExperienceState {
 export const useExperienceStore = create<ExperienceState>()((set, get) => ({
   phase: "idle",
   view: "desk",
+  devMode: false,
+
+  setDevMode: (on) => set({ devMode: on }),
 
   isPowered: () => get().phase !== "idle",
 
