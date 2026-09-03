@@ -1,0 +1,35 @@
+.panel {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: var(--z-overlay);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(8, 10, 14, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: #cdd6e4;
+  backdrop-filter: blur(4px);
+}
+
+.tag {
+  letter-spacing: 0.06em;
+  color: #8b97a9;
+}
+
+.panel button {
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #1b2130;
+  color: #e7edf6;
+  cursor: pointer;
+}
+
+.panel button:hover {
+  background: #263041;
+}

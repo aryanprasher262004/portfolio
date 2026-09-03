@@ -40,4 +40,9 @@
   --z-os: 100;
   --z-window: 200;
   --z-overlay: 900;
+
+  /* Scene (prototype — sampled from references/concept/p6.png) */
+  --scene-wall: #4e6a80;
+  --scene-accent-warm: #f08a2c; /* PC RGB / power */
+  --scene-accent-green: #7cb342; /* login button / accent */
 }
