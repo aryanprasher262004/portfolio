@@ -33,3 +33,8 @@
 .panel button:hover {
   background: #263041;
 }
+
+.panel button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

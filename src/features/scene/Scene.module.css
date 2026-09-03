@@ -3,8 +3,11 @@
   inset: 0;
   overflow: hidden;
   background: var(--scene-wall);
-  display: grid;
-  place-items: center;
+  /* flex centres the (oversized) stage on the true viewport centre — grid's
+     auto track would anchor it to the top instead. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   /* the plate is the interactive surface; text selection would fight drag later */
   user-select: none;
   touch-action: none;
@@ -21,6 +24,7 @@
 }
 
 .parallax {
+  flex: none;
   will-change: transform;
   transition: transform 220ms ease-out;
 }

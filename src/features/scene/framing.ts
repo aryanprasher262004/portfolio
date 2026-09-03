@@ -1,13 +1,14 @@
 /**
  * Pure framing math for the scene "camera".
  *
- * The stage is a fixed-aspect-ratio box (the plate) that we scale + translate.
- * We never touch its aspect ratio, so the artwork can never distort.
+ * Scale-1 stage = fills the viewport WIDTH (height overflows and is cropped).
+ * The stage box always has PLATE_ASPECT, so the artwork can never distort.
+ * Reframing = scale + translate only.
  */
 
 import {
-  DESK_Y_BIAS_VH,
-  DESK_ZOOM,
+  DESK_FILL,
+  DESK_TOP_CROP_FRAC,
   OS_LOGICAL,
   OS_SCALE,
   PLATE_ASPECT,
@@ -22,57 +23,38 @@ export interface Framing {
   /** Stage layout size in px (aspect always === PLATE_ASPECT). */
   stageW: number;
   stageH: number;
-  /** Transform applied to the stage (transform-origin: 50% 50%). */
+  /** Transform on the stage (transform-origin: 50% 50%). */
   scale: number;
   x: number;
   y: number;
-  /** Scale applied to the 1280x800 OS root inside the screen clip. */
+  /** Scale applied to the OS root so it fills SCREEN_RECT. */
   osScale: number;
 }
 
 const clamp = (v: number, lo: number, hi: number) =>
   Math.min(Math.max(v, lo), hi);
 
-/** Largest box of PLATE_ASPECT that fits entirely inside the viewport ("contain"). */
-function containStage(vw: number, vh: number) {
-  const w = Math.min(vw, vh * PLATE_ASPECT);
-  return { stageW: w, stageH: w / PLATE_ASPECT };
-}
-
-/**
- * SCREEN_RECT is exactly the OS aspect, so the 1280×800 root fills it. osScale
- * depends on the stage layout size only (the camera scale then multiplies the
- * whole stage visually), so it stays stable across the push animation.
- */
-function osScaleFor(stageW: number) {
-  return (SCREEN_RECT.width * stageW) / OS_LOGICAL.width;
-}
-
 export function computeFraming(
   vw: number,
   vh: number,
   mode: FramingMode,
 ): Framing {
-  const { stageW, stageH } = containStage(vw, vh);
-  const osScale = osScaleFor(stageW);
+  const stageW = vw;
+  const stageH = vw / PLATE_ASPECT;
+  const osScale = (SCREEN_RECT.width * stageW) / OS_LOGICAL.width;
 
   if (mode === "desk") {
-    return {
-      stageW,
-      stageH,
-      scale: DESK_ZOOM,
-      x: 0,
-      y: DESK_Y_BIAS_VH * vh,
-      osScale,
-    };
+    const scale = DESK_FILL;
+    // stage is taller than the viewport → bias the crop toward the bottom so the
+    // monitor's top edge is never clipped.
+    const overflow = stageH * scale - vh;
+    const y = overflow > 0 ? overflow * (0.5 - DESK_TOP_CROP_FRAC) : 0;
+    return { stageW, stageH, scale, x: 0, y, osScale };
   }
 
-  // MONITOR/WORK: pick a camera scale so the effective OS render scale
-  // (osScale * cameraScale) lands in a readable range, then recentre the screen.
-  const desiredEffectiveOsScale =
-    (WORK_SCREEN_WIDTH_FRAC * vw) / OS_LOGICAL.width;
+  // MONITOR/WORK — choose a camera scale for a readable screen, then recentre it.
   const effectiveOsScale = clamp(
-    desiredEffectiveOsScale,
+    (WORK_SCREEN_WIDTH_FRAC * vw) / OS_LOGICAL.width,
     OS_SCALE.min,
     OS_SCALE.max,
   );

@@ -4,7 +4,6 @@
   pointer-events: none;
 }
 
-/* every layer is positioned by % of the plate/stage */
 .surface,
 .clip,
 .blackout,
@@ -12,13 +11,13 @@
   position: absolute;
 }
 
-/* solid black screen "glass", covers any artwork white that leaks past the OS */
+/* solid black screen "glass" — covers any artwork white behind the OS */
 .surface {
   background: #080809;
   z-index: 1;
 }
 
-/* where the OS actually renders (exact OS aspect → fills with no letterbox) */
+/* where the OS renders — aspect matches OS_LOGICAL so it fills with no bars */
 .clip {
   overflow: hidden;
   z-index: 2;
@@ -33,25 +32,33 @@
   background: var(--os-bg, #10131a);
 }
 
-/* backlight-off cover; fades out on monitor wake (Phase 1.4) */
+/* backlight-off cover; fades on monitor wake */
 .blackout {
   z-index: 3;
   background: #050506;
   opacity: 0;
-  transition: opacity 550ms ease;
+  transition: opacity 650ms ease;
+  pointer-events: none;
 }
-.monitor[data-powered="false"] .blackout {
+.monitor[data-awake="false"] .blackout {
   opacity: 1;
 }
 
-/* faint glass sheen so the panel doesn't read as a flat div */
+/* faint glass sheen */
 .glare {
   z-index: 4;
   background: linear-gradient(
     115deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    rgba(255, 255, 255, 0.015) 22%,
+    rgba(255, 255, 255, 0.045) 0%,
+    rgba(255, 255, 255, 0.014) 22%,
     rgba(255, 255, 255, 0) 46%
   );
   mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blackout {
+    transition: none;
+  }
 }

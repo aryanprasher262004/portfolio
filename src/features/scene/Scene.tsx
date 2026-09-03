@@ -9,87 +9,75 @@ import {
 } from "react";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useViewportSize } from "@/lib/useViewportSize";
-import { useExperienceStore } from "@/stores/experienceStore";
+import { type Phase, useExperienceStore } from "@/stores/experienceStore";
 import { computeFraming } from "./framing";
 import { MonitorScreen } from "./MonitorScreen";
-import { CAMERA_PUSH, PARALLAX_MAX_PX, PLATE } from "./sceneConfig";
+import { PcState } from "./PcState";
+import { PowerControl } from "./PowerControl";
+import { CAMERA_MOVE, PARALLAX_MAX_PX, PLATE } from "./sceneConfig";
 import { SceneDevControls } from "./SceneDevControls";
 import { ScreenPlaceholder } from "./ScreenPlaceholder";
 import styles from "./Scene.module.css";
 
 gsap.registerPlugin(useGSAP);
 
+const PHASES: Phase[] = ["idle", "poweringOn", "booting", "login", "desktop"];
+
 export function Scene() {
   const containerRef = useRef<HTMLDivElement>(null);
   const parallaxRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
-  /** null until the first framing is applied; then tracks the last applied mode. */
-  const appliedMode = useRef<boolean | null>(null);
+  const appliedView = useRef<string | null>(null);
 
   const { width: vw, height: vh } = useViewportSize();
   const reduced = useReducedMotion();
-  const phase = useExperienceStore((s) => s.phase);
-  const atMonitor = useExperienceStore((s) => s.atMonitor);
-  const setPhase = useExperienceStore((s) => s.setPhase);
-  const advance = useExperienceStore((s) => s.advance);
 
-  // Dev/testing helpers via query string:
-  //   ?phase=poweredOn  → jump straight to a framing state
-  //   ?dev=push         → start on the desk, then trigger the camera push
+  const phase = useExperienceStore((s) => s.phase);
+  const view = useExperienceStore((s) => s.view);
+  const powerOn = useExperienceStore((s) => s.powerOn);
+  const setPhase = useExperienceStore((s) => s.setPhase);
+  const toggleView = useExperienceStore((s) => s.toggleView);
+
+  const powered = phase !== "idle";
+  // Backlight: PC glows during `poweringOn`, screen wakes as boot begins.
+  // No camera movement is tied to any of this — that is user-initiated only.
+  const awake = powered && phase !== "poweringOn";
+
+  // Dev/testing: ?phase=booting , ?view=monitor
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
     const p = q.get("phase");
-    if (
-      p === "idle" ||
-      p === "poweredOn" ||
-      p === "booting" ||
-      p === "login" ||
-      p === "desktop"
-    ) {
-      setPhase(p);
-    }
-    if (q.get("dev") === "push") {
-      const t = window.setTimeout(() => advance(), 700);
-      return () => window.clearTimeout(t);
-    }
-  }, [setPhase, advance]);
+    if (p && (PHASES as string[]).includes(p)) setPhase(p as Phase);
+    if (q.get("view") === "monitor")
+      useExperienceStore.getState().enterMonitor();
+  }, [setPhase]);
 
   const ready = vw > 0 && vh > 0;
-  const framing = ready
-    ? computeFraming(vw, vh, atMonitor ? "monitor" : "desk")
-    : null;
+  const framing = ready ? computeFraming(vw, vh, view) : null;
 
   useGSAP(
     () => {
       const stage = stageRef.current;
       if (!framing || !stage) return;
-
       const target = { scale: framing.scale, x: framing.x, y: framing.y };
-      const firstApply = appliedMode.current === null;
-      const modeChanged = !firstApply && appliedMode.current !== atMonitor;
-      appliedMode.current = atMonitor;
+      const firstApply = appliedView.current === null;
+      const viewChanged = !firstApply && appliedView.current !== view;
+      appliedView.current = view;
 
-      if (modeChanged && !reduced) {
+      if (viewChanged && !reduced) {
         gsap.to(stage, {
           ...target,
-          duration: CAMERA_PUSH.duration,
-          ease: CAMERA_PUSH.ease,
+          duration: CAMERA_MOVE.duration,
+          ease: CAMERA_MOVE.ease,
           overwrite: "auto",
         });
       } else {
-        // first paint, or a resize within the same framing state → snap
         gsap.set(stage, target);
       }
     },
     {
       scope: containerRef,
-      dependencies: [
-        framing?.scale,
-        framing?.x,
-        framing?.y,
-        atMonitor,
-        reduced,
-      ],
+      dependencies: [framing?.scale, framing?.x, framing?.y, view, reduced],
     },
   );
 
@@ -97,10 +85,10 @@ export function Scene() {
     if (reduced || !parallaxRef.current || !ready) return;
     const nx = (e.clientX / vw) * 2 - 1;
     const ny = (e.clientY / vh) * 2 - 1;
-    const factor = atMonitor ? 0.25 : 1;
-    const dx = -nx * PARALLAX_MAX_PX * factor;
-    const dy = -ny * PARALLAX_MAX_PX * factor;
-    parallaxRef.current.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+    const factor = view === "monitor" ? 0.18 : 1;
+    parallaxRef.current.style.transform = `translate3d(${
+      -nx * PARALLAX_MAX_PX * factor
+    }px, ${-ny * PARALLAX_MAX_PX * factor}px, 0)`;
   }
 
   function resetParallax() {
@@ -130,9 +118,16 @@ export function Scene() {
               width={PLATE.naturalWidth}
               height={PLATE.naturalHeight}
             />
-            <MonitorScreen osScale={framing.osScale} powered={phase !== "idle"}>
+            <PcState powered={powered} />
+            <MonitorScreen
+              osScale={framing.osScale}
+              awake={awake}
+              view={powered ? view : null}
+              onToggleView={toggleView}
+            >
               <ScreenPlaceholder phase={phase} />
             </MonitorScreen>
+            {phase === "idle" && <PowerControl onPress={powerOn} />}
           </div>
         )}
       </div>

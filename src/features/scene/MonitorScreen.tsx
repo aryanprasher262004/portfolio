@@ -1,21 +1,22 @@
 import type { CSSProperties, ReactNode } from "react";
+import type { View } from "@/stores/experienceStore";
+import { FocusToggle } from "./FocusToggle";
 import { OS_LOGICAL, SCREEN_RECT, SCREEN_SURFACE_RECT } from "./sceneConfig";
 import styles from "./MonitorScreen.module.css";
 
 interface MonitorScreenProps {
-  /** Scale applied to the 1280×800 OS root so it fills SCREEN_RECT. */
+  /** Scale applied to the OS root so it fills SCREEN_RECT. */
   osScale: number;
   /** false = screen is dark (backlight off). */
-  powered: boolean;
+  awake: boolean;
+  /** null hides the focus control (PC not powered yet). */
+  view: View | null;
+  onToggleView: () => void;
   children: ReactNode;
 }
 
-const pct = (r: {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-}): CSSProperties => ({
+type Rect = { left: number; top: number; width: number; height: number };
+const pct = (r: Rect): CSSProperties => ({
   left: `${r.left * 100}%`,
   top: `${r.top * 100}%`,
   width: `${r.width * 100}%`,
@@ -26,17 +27,18 @@ const surfaceStyle = pct(SCREEN_SURFACE_RECT);
 const clipStyle = pct(SCREEN_RECT);
 
 /**
- * The real HTML monitor surface, positioned over the plate's screen opening.
- * A child of the transformed stage, so it tracks the artwork through the camera
- * push. The OS renders at a fixed logical resolution and is scaled to fit.
+ * The real HTML monitor surface over the plate's screen opening. A child of the
+ * transformed stage, so it tracks the artwork through the camera move.
  */
 export function MonitorScreen({
   osScale,
-  powered,
+  awake,
+  view,
+  onToggleView,
   children,
 }: MonitorScreenProps) {
   return (
-    <div className={styles.monitor} data-powered={powered}>
+    <div className={styles.monitor} data-awake={awake}>
       <div className={styles.surface} style={surfaceStyle} aria-hidden />
       <div className={styles.clip} style={clipStyle}>
         <div
@@ -49,6 +51,7 @@ export function MonitorScreen({
         >
           {children}
         </div>
+        {view && <FocusToggle view={view} onToggle={onToggleView} />}
       </div>
       <div className={styles.blackout} style={surfaceStyle} aria-hidden />
       <div className={styles.glare} style={surfaceStyle} aria-hidden />

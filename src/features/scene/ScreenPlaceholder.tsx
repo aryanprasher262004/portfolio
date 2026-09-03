@@ -1,21 +1,37 @@
 import type { Phase } from "@/stores/experienceStore";
 import styles from "./ScreenPlaceholder.module.css";
 
+const LABEL: Record<Phase, string> = {
+  idle: "",
+  poweringOn: "",
+  booting: "BOOTING",
+  login: "LOGIN",
+  desktop: "DESKTOP",
+};
+
 /**
- * Temporary contents of the monitor for Phase 1.3.
- * The real OS (loading / login / desktop / windows) arrives in Phases 1.4–1.6.
+ * Temporary monitor contents. The real OS (loading / login / desktop / windows)
+ * arrives in Phases 1.5–1.6.
  */
 export function ScreenPlaceholder({ phase }: { phase: Phase }) {
   return (
     <div className={styles.root}>
       <div className={styles.grid} aria-hidden />
-      <div className={styles.label}>
-        <span className={styles.dot} />
-        MONITOR SURFACE — {phase.toUpperCase()}
+      <div className={styles.center}>
+        <p className={styles.title}>
+          <span className={styles.dot} />
+          {LABEL[phase] || "MONITOR SURFACE"}
+        </p>
+        <p className={styles.note}>
+          {OS_NOTE[phase] ?? "real HTML/CSS · 1280 × 740 logical"}
+        </p>
       </div>
-      <p className={styles.note}>
-        1280 × 800 logical · real HTML/CSS · OS lands in 1.4–1.6
-      </p>
     </div>
   );
 }
+
+const OS_NOTE: Partial<Record<Phase, string>> = {
+  booting: "loading screen lands in 1.5",
+  login: "login screen lands in 1.5",
+  desktop: "desktop + windows land in 1.5–1.6",
+};
