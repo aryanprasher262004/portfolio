@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { InteractionHint } from "./InteractionHint";
 import { POWER_HOTSPOT_RECT } from "./sceneConfig";
 import styles from "./PowerControl.module.css";
 
@@ -10,8 +11,9 @@ const rectStyle: CSSProperties = {
 };
 
 /**
- * Fake HTML power button positioned over the PC tower's top-front. Discoverable
- * on hover (glow + power glyph + tooltip), then triggers the power sequence.
+ * Fake HTML power button over the PC tower's top-front. Always faintly visible
+ * with a gentle idle pulse; brighter on hover/focus. The pulse stops when this
+ * unmounts on power-on.
  */
 export function PowerControl({ onPress }: { onPress: () => void }) {
   return (
@@ -21,19 +23,24 @@ export function PowerControl({ onPress }: { onPress: () => void }) {
       style={rectStyle}
       onClick={onPress}
       aria-label="Power on the computer"
+      aria-describedby="hint-power"
     >
-      <span className={styles.glow} aria-hidden />
+      <span className={styles.ring} aria-hidden />
       <span className={styles.glyph} aria-hidden>
         <svg viewBox="0 0 16 16" shapeRendering="crispEdges">
           <path
-            d="M7 2h2v6H7z M4 4h1v1H4z M3 5h1v2H3z M3 7h1v2H3z M4 9h1v2H4z M5 11h2v1H5z M7 12h2v1H7z M9 11h2v1H9z M11 9h1v2h-1z M12 7h1v2h-1z M12 5h1v2h-1z M11 4h1v1h-1z"
             fill="currentColor"
+            d="M7 2h2v6H7z M4 4h1v1H4z M3 5h1v2H3z M3 7h1v2H3z M4 9h1v2H4z M5 11h2v1H5z M7 12h2v1H7z M9 11h2v1H9z M11 9h1v2h-1z M12 7h1v2h-1z M12 5h1v2h-1z M11 4h1v1h-1z"
           />
         </svg>
       </span>
-      <span className={styles.tooltip} aria-hidden>
-        POWER
-      </span>
+      <InteractionHint
+        id="hint-power"
+        icon="⚡"
+        title="Power on"
+        body="Click to start the PC"
+        className={styles.hint}
+      />
     </button>
   );
 }

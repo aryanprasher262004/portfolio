@@ -1,0 +1,56 @@
+.hint {
+  position: absolute;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 128px;
+  padding: 6px 9px;
+  font-family: var(--font-mono);
+  text-align: left;
+  color: #e9eef7;
+  background: #0e1119;
+  border: 1px solid #3a4a63;
+  /* chunky pixel bevel + corner tick */
+  box-shadow:
+    inset 1px 1px 0 #26324a,
+    inset -1px -1px 0 #05070c,
+    3px 3px 0 rgba(0, 0, 0, 0.45);
+  border-radius: 2px;
+  white-space: nowrap;
+  pointer-events: none;
+  /* hidden by default — the trigger's stylesheet reveals it */
+  opacity: 0;
+  translate: 0 4px;
+  transition:
+    opacity 120ms ease,
+    translate 120ms ease;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fef1df;
+}
+
+.icon {
+  font-size: 11px;
+}
+
+.body {
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: #93a1b8;
+  text-transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hint {
+    transition-duration: 1ms;
+  }
+}
