@@ -3,44 +3,51 @@
 > Operational source of truth. Keep this CURRENT, not a history book.
 > Update at the end of every meaningful subphase.
 
-**Current Phase:** 1 — Visual + technical prototypes (not started)
-**Current Subphase:** 1.1 — Reference analysis (next)
-**Status:** PHASE 0 COMPLETE — awaiting go-ahead for Phase 1
-**Current Branch:** `feat/foundation-docs` (holds all Phase 0 doc/config work; not
-yet merged to `main`)
+**Current Phase:** 1 — Visual + technical prototypes
+**Current Subphase:** 1.4 — Power + monitor prototype (next)
+**Status:** 1.3 COMPLETE — awaiting go-ahead for 1.4
+**Current Branch:** `feat/foundation-docs` (Phase 0 + Phase 1 docs; not merged)
 
 ## Last Completed
 
-- **Phase 0 — Foundation, complete.** Scaffold (Next 16 + strict TS + CSS Modules +
-  tokens + ESLint/Prettier, pnpm), git workflow (`main` + `feat/*`), full `docs/`
-  system, Claude Code config (`CLAUDE.md` + rule + `/continue` skill), and the
-  GitHub→Vercel deploy pipeline (`main` = production). See
-  `docs/handoffs/PHASE_0_HANDOFF.md`.
+- **1.3 — Vertical prototype foundation.** `src/features/scene/`: `<Scene>` (client)
+  = aspect-preserving stage (never distorts) plus a GSAP camera between two framings
+  (`framing.ts`: DESK/INTRO contain+zoom, MONITOR/WORK screen ≈78% vw + readable OS).
+  `<MonitorScreen>` real-HTML overlay tracks the artwork (a black screen-surface rect
+  with the 1.6 OS rect inside). `<ScreenPlaceholder>` and `<SceneDevControls>` are
+  temporary. `experienceStore` (zustand). Verified: build/lint/typecheck/format green;
+  Playwright confirmed the push is smooth + monotonic at 1440/1366/1920; end-state
+  screenshots readable at all four target viewports. Deps: `gsap`, `@gsap/react`,
+  `zustand`, `playwright-core` (dev).
+- **1.2 — Prototype visual spec.** `PHASE_1_REFERENCE_ANALYSIS.md` § Phase 1.2.
+- **1.1 — Reference analysis.** Direction B (blue-grey); blank screen + HTML UI; six apps.
 
 ## Currently Working On
 
-- Nothing in progress.
+- Nothing in progress. `localhost:3000` serves the prototype; `?dev=push` triggers
+  the camera push, `?phase=poweredOn|booting|login|desktop` jumps to a framing state.
 
 ## Next Exact Task
 
-- **Phase 1.1 — Reference analysis.** Owner has assets ready (see below). Study them
-  and document: composition, colour, depth, lighting, pixel density, monitor
-  proportions, interaction opportunities. Output goes into a Phase 1 working doc
-  (not yet created). Do NOT write production code, do NOT install `three`/R3F, do
-  NOT pick a rendering approach — that is Phase 1.8 / DEC-012.
+- **1.4 — Power + monitor prototype**: power hotspot on the PC/monitor, PC power
+  state (fan glow), monitor wake (blackout fade), sequence power → wake → camera
+  push, handoff into the HTML monitor overlay; then test Clip 1 / Clip 2 vs the
+  faked version and keep a clip only if it clearly wins. Replace `<SceneDevControls>`
+  with the real interaction.
 
 ## Blockers
 
-- None. Reference assets are ready (owner confirmed at end of Phase 0). They need to
-  be placed in `references/concept/` and `references/experiments/`.
+- `p4.jpg` / `p5.png` from the p1–p7 set no longer exist on disk (minor — confirm
+  with owner whether to recover).
+- `ffmpeg` not installed (owner asked not to install without approval). Clip frames
+  were extracted with a local Swift/AVFoundation script instead — works fine.
 
-## Assets available for Phase 1 (references / prototypes — NOT final production assets)
+## Assets in `references/` (references / prototypes — NOT final production assets)
 
-- PC / desk reference images
-- Blank-monitor concept
-- Desktop-on concept
-- Clip 1 — PC power-on animation
-- Clip 2 — monitor wake / camera-push animation
+- `concept/p1.png`, `p2.png` — green-wall direction (angled hero + UI sheet)
+- `concept/p3.jpg`, `p6.png`, `p7.png` — blue-grey direction (blank + desktop-on)
+- `experiments/pcon.mp4` — Clip 1, PC power-on (1080p, 5.0s, has watermark)
+- `experiments/monitoron.mp4` — Clip 2, monitor wake / camera push (720p, 4.0s, watermark)
 
 ## Known Issues
 
@@ -50,23 +57,22 @@ yet merged to `main`)
 ## Important Files
 
 - `docs/` — all project memory. Start here every session.
-- `CLAUDE.md` (imports `AGENTS.md`) · `.claude/rules/` · `.claude/skills/continue/`
-- `src/app/{layout,page}.tsx`, `src/app/globals.css`, `src/styles/tokens.css`
-- `AGENTS.md` — framework-managed (Next 16 "read the bundled docs" warning)
-- `next.config.ts`, `tsconfig.json`, `eslint.config.mjs`
-- `docs/handoffs/PHASE_0_HANDOFF.md`
+- `docs/PHASE_1_REFERENCE_ANALYSIS.md` — 1.1 findings + 1.2 spec
+- `src/features/scene/` — `Scene.tsx`, `framing.ts`, `sceneConfig.ts`,
+  `MonitorScreen.tsx` (+ temp `ScreenPlaceholder`, `SceneDevControls`)
+- `src/stores/experienceStore.ts` · `src/lib/{useViewportSize,useReducedMotion}.ts`
+- `src/styles/tokens.css` (added `--scene-*`) · `public/prototype/` (temp p6 + clips)
+- `CLAUDE.md` · `.claude/rules/` · `.claude/skills/continue/`
+- `references/concept/` + `references/experiments/` — concept assets
 
-## Verification (Phase 0.8, final)
+## Verification (1.3)
 
-- `pnpm install --frozen-lockfile` ✅ up to date
-- `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` ✅ (3 static routes) ·
-  `pnpm format:check` ✅
-- Production URL `https://portfolio-delta-sand-34.vercel.app` ✅ HTTP 200, correct
-  title + content
-- Dependency audit ✅ only `next`/`react`/`react-dom` + standard dev tooling; **no
-  `three`/`@react-three/*`**; only `pnpm-lock.yaml`
-- Secrets ✅ no `.env`/`.pem`/key files tracked; `.gitignore` covers them
-- Node pin ✅ `.nvmrc` = 22, `engines.node` `>=22`, `engine-strict=true`
+- `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` ✅ · `pnpm format:check` ✅
+- Playwright (real Chrome): camera push scale ramps 1.2 → ~1.87–2.07 monotonically,
+  eased, settles ~2.4s; no jump. Verified 1440×900 / 1366×768 / 1920×1080.
+- Screenshots (true-viewport headless): DESK + MONITOR framings readable and
+  correctly composited at 1440×900 / 1366×768 / 1536×864 / 1920×1080.
+- Still **no `three`/`@react-three/*`**; pnpm-only; Node 22 pin intact.
 
 ## Notes For Next Session
 

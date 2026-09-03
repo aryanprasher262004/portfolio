@@ -24,16 +24,27 @@
 
 ---
 
-## Phase 1 — Visual + technical prototypes _(critical — decides how much real 3D)_
+## Phase 1 — Visual + technical prototypes _(revised: build a vertical prototype, then decide DEC-012)_
 
-- [ ] **1.1** Reference analysis — composition, colour, depth, lighting, pixel density, monitor proportions, interaction opportunities _(needs reference images)_
-- [ ] **1.2** Final visual concept exploration — what assets we need to generate (no final assets yet)
-- [ ] **1.3** 2.5D prototype — image layers + CSS perspective + GSAP + cursor parallax
-- [ ] **1.4** Real 3D prototype — simple R3F boxes (only if justified); camera / monitor / screen / interaction / perf
-- [ ] **1.5** Monitor UI prototype — monitor + HTML screen + basic desktop + 1 icon + 1 window + scroll (architectural spike)
-- [ ] **1.6** Camera / depth test — "push toward monitor" via candidate techniques
-- [ ] **1.7** Architecture comparison — score real 3D / 2.5D / video / hybrid on quality, complexity, perf, mobile, asset difficulty, maintainability, interaction freedom
-- [ ] **1.8** Architecture decision — record in `DECISIONS.md` (DEC-012). **STOP for owner approval before production implementation.**
+**Strategy (owner, 2026-09-03):** Phase 1.1 gave enough architectural evidence to
+start building. From here, prioritise **implementation speed + visual validation
+over planning/documentation**. Goal = a runnable **vertical functional prototype**:
+desk → power → PC on → monitor wake / camera push → loading → login → desktop →
+click Projects → scrollable Projects window. Reasonably polished; final
+assets/content NOT required. Simplest viable **hybrid / 2.5D** (still imagery +
+existing clips + HTML/CSS monitor + GSAP). **No Three.js/R3F** — real 3D is an
+escape hatch only if the prototype reveals a concrete limitation. Keep doc updates
+concise/operational; no new architecture/risk docs unless a genuinely new important
+issue appears.
+
+- [x] **1.1** Reference analysis — 5 images + 2 clips analysed; direction B (blue-grey) is the working world; monitor to be enlarged/dominant; `docs/PHASE_1_REFERENCE_ANALYSIS.md`. DEC-012 stays OPEN
+- [x] **1.2** Prototype visual specification — decided: p6 base plate, two framing states (DESK/INTRO + MONITOR/WORK), never-distort/aspect-preserved responsive framing, real-HTML monitor at 1280×800 logical, fake camera first / clips optional, `LOADING 6 OF 6`. Spec in `PHASE_1_REFERENCE_ANALYSIS.md` § Phase 1.2.
+- [x] **1.3** Vertical prototype foundation — `<Scene>` with aspect-preserving responsive framing (two states: DESK/INTRO whole-scene, MONITOR/WORK dominant+readable), p6 plate, HTML `<MonitorScreen>` overlay tracking the artwork, GSAP camera push (verified smooth at 1440/1366/1920 via Playwright), damped mouse parallax. `zustand` + `gsap` + `@gsap/react` + `playwright-core`(dev) added
+- [ ] **1.4** Power + monitor prototype — power hotspot, PC power state, Clip 1 where appropriate, monitor wake, Clip 2 or equivalent GSAP transition, handoff into the HTML monitor overlay
+- [ ] **1.5** Monitor OS prototype — loading screen, login screen, login transition, desktop, six icons, taskbar / basic desktop chrome
+- [ ] **1.6** Projects interaction prototype — reusable `<Window>` primitive, Projects icon opens window, close, focus, scrollable placeholder project content, dragging if reliable
+- [ ] **1.7** Prototype review — run the full flow in-browser; evaluate visual quality, overlay alignment, responsiveness, transition continuity, performance, whether video/hybrid actually works
+- [ ] **1.8** DEC-012 final rendering decision — only after seeing the working prototype: hybrid sufficient / pure 2.5D better / reduce video / real 3D actually necessary. Record in `DECISIONS.md`. **STOP for owner approval before production implementation.**
 
 ---
 

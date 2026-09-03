@@ -15,6 +15,11 @@
 | RISK-009 | Next.js 16 is newer than model training data           | Med × Med   | MITIGATING | Framework-managed `AGENTS.md` points at `node_modules/next/dist/docs/`. Verify APIs against bundled docs before writing Next code.                                              |
 | RISK-010 | Committing large binary assets bloats the repo         | Med × Med   | OPEN       | `ASSET_PIPELINE.md` defines how generated art enters the repo; keep source art in `references/`, ship optimized assets in `public/`. Consider size budgets / Git LFS if needed. |
 | RISK-011 | Scope creep in Phase 7 (personality/microinteractions) | Med × Med   | OPEN       | Phase 7 only after core portfolio works. Feature-evaluation rule. Easter eggs only if cheap.                                                                                    |
+| RISK-012 | Reference clips carry Kling/AI watermarks              | High × Med  | OPEN       | Crop or regenerate clean before any production use; design production framing so the watermark strip is croppable. See `PHASE_1_REFERENCE_ANALYSIS.md`.                         |
+| RISK-013 | Two divergent art directions (green vs blue wall)      | Med × Med   | MITIGATING | Working direction = blue-grey (both video clips commit to it). Confirm in Phase 1.2/1.4; drop or de-prioritise green.                                                           |
+| RISK-014 | AI text + 8-icon grid baked into screen artwork        | Med × Med   | MITIGATING | Production base render must have a BLANK screen; all UI is HTML; six apps not eight (matches DEC + brief).                                                                      |
+| RISK-015 | Hero clip weight (1080p, 4.7 MB / 1.9 MB) hurts mobile | Med × High  | OPEN       | Compress + downscale + trim + poster frames; keep a non-video idle/fallback state so playback isn't the only path. Revisit Phase 9.                                             |
+| RISK-016 | AI re-generation variance when iterating the scene     | Med × Med   | OPEN       | Expect several attempts or manual compositing to reproduce palette/props with a bigger monitor + blank screen + no watermark. Ties to RISK-002/004.                             |
 
 ## Feature-evaluation rule
 
