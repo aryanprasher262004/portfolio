@@ -4,41 +4,29 @@
 > Update at the end of every meaningful subphase.
 
 **Current Phase:** 1 — Visual + technical prototypes
-**Current Subphase:** 1.6 — Projects interaction prototype (next)
-**Status:** 1.5 COMPLETE — awaiting go-ahead for 1.6
-**Current Branch:** `feat/monitor-os` (not merged; `main` is at `a57f673`)
+**Current Subphase:** 1.8 — DEC-012 final rendering decision (next)
+**Status:** 1.7 COMPLETE — awaiting owner review before 1.8
+**Current Branch:** `feat/monitor-os` (1.5 committed as `b321692`; 1.6–1.7
+uncommitted; not merged; `main` is at `a57f673`)
 
 ## Last Completed
 
-- **Merges** — `feat/foundation-docs` → `main` (`066e8bf`) and `feat/interaction-hints`
-  → `main` (`a57f673`), both pushed. Production redeployed and verified after each.
-- **InteractionHint** — reusable retro-themed hint component (hover + keyboard
-  focus via `aria-describedby`); `PowerControl` glyph now visible at idle with a
-  gentle glow pulse (stops on power-on); `FocusToggle` uses the same hint.
-- **1.4 — Power + monitor interaction.** Decoupled `phase` (idle→poweringOn→booting→
-  login→desktop) and `view` (desk/monitor) in `experienceStore` (DEC-014). Real power
-  interaction: `<PowerControl>` hotspot on the PC top-front (hover glyph + glow +
-  "POWER" tooltip) → `<PcState>` off-wash lifts + fan bloom → staged monitor wake
-  (`awake` derived) → boot. **No camera move on power.** `<FocusToggle>` (retro pixel
-  brackets, FOCUS ⇄ EXIT) inside the screen bottom-right drives a reversible GSAP
-  desk⇄monitor move; power stays on across it. Bezel tightened (SCREEN_RECT hugs the
-  glass, OS = 1280×740; screen ≈82% vw in focus). Framing switched to flex-centring +
-  cover-width + crop-bias so the scene uses the viewport. `app/icon.svg` added
-  (kills the favicon 404). Playwright-verified full flow at 1366/1440/1536/1920,
-  0 console errors, focus/restore stable across repeats.
-- **1.3 — Vertical prototype foundation.** `<Scene>` + aspect-preserving stage +
-  GSAP camera + `<MonitorScreen>` overlay. Deps: `gsap`, `@gsap/react`, `zustand`,
-  `playwright-core` (dev).
-- **1.1–1.2 — Reference analysis + prototype spec** (`PHASE_1_REFERENCE_ANALYSIS.md`).
-
-- **1.5 — Monitor OS prototype.** `src/features/os/` (new, insulated from
-  `features/scene` per DEC-006): `OS.tsx` switches on store `phase`; `Loading`
-  (staged `LOADING N OF 6`, real timers, reduced-motion fallback); `Login` (fake
-  auth — any input, submit via click or Enter — `setPhase("desktop")`);
-  `Desktop` (six-icon grid, click-to-select only, no windows yet) + `Taskbar`
-  (Start button, live clock); shared `Wallpaper` (CSS-only day/dusk). Deleted
-  the now-superseded `ScreenPlaceholder`. `FocusToggle` moved to top-right so it
-  no longer overlaps the taskbar.
+- **1.7 — Prototype review + desktop UX pass.** `settingsStore` (icon size +
+  wallpaper tone, localStorage-persisted); themed desktop right-click menu
+  (View / Wallpaper / Settings); functional Start menu (Search stub, Settings,
+  Restart, Shut Down — reuse `experienceStore`); taskbar minimize/restore;
+  `src/data/projects.ts` (Projects is now data-driven); friendlier login hint.
+  Fixed a real bug: window drag moved 1 logical px per **screen** px, ignoring
+  the OS render scale — now divides by the measured scale, 1:1 cursor tracking.
+- **1.6 — Projects window.** `features/windows/` (`Window`, `windowStore`,
+  `WindowManager`) + `features/apps/projects/ProjectsContent`. Drag, focus/z,
+  close, scroll, taskbar chip.
+- **1.5 — Monitor OS prototype.** `features/os/` (`OS`, `Loading`, `Login`,
+  `Desktop`, `Taskbar`, `Wallpaper`) — insulated from `features/scene`
+  (DEC-006).
+- **1.1–1.4** — reference analysis, prototype spec, scene foundation, power +
+  monitor-focus interaction. See git log / `docs/handoffs/PHASE_0_HANDOFF.md`
+  for anything older.
 
 ## Currently Working On
 
@@ -47,23 +35,34 @@
 
 ## Next Exact Task
 
-- **1.6 — Projects interaction prototype**: reusable `<Window>` primitive,
-  Projects icon opens it, close/focus/scroll, placeholder project content
-  clearly marked as placeholder.
+- **Owner reviews Phase 1.7** (full flow + the IMPORTANT/POLISH classification
+  in the 1.7 report). Then **1.8 — DEC-012**: decide hybrid vs. pure 2.5D vs.
+  reduced-video vs. real 3D from the working prototype; record in
+  `docs/DECISIONS.md`; **STOP for owner approval** before any production
+  rendering implementation.
+
+## Deferred from 1.7 (homed in ROADMAP.md — not scope creep, just not yet)
+
+- Icon drag/reposition + persisted layout → **5.6**
+- Secure remote/URL wallpaper support → **5.5** (RISK-017)
+- Configurable login avatar → **5.2**
+- Custom pixel/retro cursor → **10.5**
+- Projects visual redesign (portfolio-app feel, not admin list) → **6.3**
+- Real search index (Start-menu Search is a UI stub) → **6.1**
+- PC-tower mini-screen/screensaver → **Phase 12**
 
 ## Blockers
 
-- `p4.jpg` / `p5.png` from the p1–p7 set no longer exist on disk (minor — confirm
-  with owner whether to recover).
-- `ffmpeg` not installed (owner asked not to install without approval). Clip frames
-  were extracted with a local Swift/AVFoundation script instead — works fine.
+- `p4.jpg` / `p5.png` from the p1–p7 set no longer exist on disk (minor).
+- `ffmpeg` not installed (owner asked not to install without approval); clip
+  frames were extracted via a local Swift/AVFoundation script instead.
 
-## Assets in `references/` (references / prototypes — NOT final production assets)
+## Assets in `references/` (dev-only — NOT final production assets)
 
 - `concept/p1.png`, `p2.png` — green-wall direction (angled hero + UI sheet)
 - `concept/p3.jpg`, `p6.png`, `p7.png` — blue-grey direction (blank + desktop-on)
-- `experiments/pcon.mp4` — Clip 1, PC power-on (1080p, 5.0s, has watermark)
-- `experiments/monitoron.mp4` — Clip 2, monitor wake / camera push (720p, 4.0s, watermark)
+- `experiments/pcon.mp4` / `monitoron.mp4` — power-on / monitor-wake clips
+  (watermarked, unused so far)
 
 ## Known Issues
 
@@ -74,33 +73,33 @@
 
 - `docs/` — all project memory. Start here every session.
 - `docs/PHASE_1_REFERENCE_ANALYSIS.md` — 1.1 findings + 1.2 spec
-- `src/features/scene/` — `Scene.tsx`, `framing.ts`, `sceneConfig.ts` (all rects +
-  tunables), `MonitorScreen.tsx`, `PowerControl.tsx`, `PcState.tsx`,
-  `FocusToggle.tsx`, `InteractionHint.tsx` (+ temp `SceneDevControls`)
-- `src/features/os/` — `OS.tsx`, `Loading.tsx`, `Login.tsx`, `Desktop.tsx`,
-  `Taskbar.tsx`, `Wallpaper.tsx`, `icons.tsx` (insulated from `features/scene`)
-- `src/stores/experienceStore.ts` — `phase` + `view` (DEC-014)
-- `src/lib/{useViewportSize,useReducedMotion}.ts` · `src/app/icon.svg`
-- `src/styles/tokens.css` (`--scene-*`) · `public/prototype/` (temp p6 + clips)
+- `src/features/scene/` — camera/framing/monitor-overlay (`Scene`, `framing`,
+  `sceneConfig`, `MonitorScreen`, `PowerControl`, `PcState`, `FocusToggle`,
+  `InteractionHint` + temp `SceneDevControls`)
+- `src/features/os/` — `OS`, `Loading`, `Login`, `Desktop`, `Taskbar`,
+  `Wallpaper`, `ContextMenu`, `StartMenu`, `icons` (insulated from `scene`)
+- `src/features/windows/` — `Window`, `windowStore`, `WindowManager`
+- `src/features/apps/{projects,settings}/` — chrome-free app content
+- `src/stores/{experienceStore,settingsStore}.ts` · `src/data/projects.ts`
 
-## Verification (1.5)
+## Verification (1.7)
 
 - `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` ✅ · `pnpm format:check` ✅
 - Playwright (real Chrome) at 1366×768 / 1440×900 / 1536×864 / 1920×1080: full
-  power → loading → login → desktop → focus → restore flow, **0 console errors**
-  at every size.
-- Reduced-motion: loading shortcuts to login (~500ms), no errors.
-- Login accepts Enter-key submit (not just click); desktop icon click sets
-  visual selection (no window yet — that's 1.6).
-- Still **no `three`/`@react-three/*`**; pnpm-only; Node 22 pin intact.
+  power → loading → login → desktop flow, **0 console errors** at every size.
+- Icon size (medium default, larger than the old fixed size) + wallpaper tone
+  change and persist to `localStorage`; Settings window reflects the same
+  state. Drag now tracks the cursor 1:1 (was off by the render-scale factor).
+  Minimize hides the window and keeps the taskbar chip; restore brings it back
+  focused. Start-menu Restart replays the boot sequence to Login; Shut Down
+  returns to the idle desk. Still no `three`/`@react-three/*`.
 
 ## Notes For Next Session
 
-- **A video + HTML/CSS + GSAP hybrid looks promising but is NOT selected.** Phase 1
-  must still objectively compare 2.5D · video/pre-rendered · real 3D · hybrid.
-  Decision is deferred to Phase 1.8 / DEC-012.
-- Rendering architecture deferred — do NOT install `three` / R3F / drei before 1.8.
-- The insulation rule (DEC-006): OS/apps are plain DOM in a container; only
-  `features/scene/**` touches rendering. Never import scene into os/apps.
+- **DEC-012 remains OPEN.** A video+HTML/CSS+GSAP hybrid looks promising but
+  is not selected — 1.8 is the decision point, with owner approval required
+  before production rendering work begins.
+- The insulation rule (DEC-006): OS/apps are plain DOM; only
+  `features/scene/**` touches rendering. Never import scene into os/apps/windows.
 - YAGNI on directories — create a folder in the phase that first needs it.
 - pnpm only. Node 22. Six apps, not eight. One window component.

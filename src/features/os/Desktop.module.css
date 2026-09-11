@@ -11,8 +11,27 @@
   left: 18px;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(2, 76px);
-  gap: 6px 10px;
+  grid-template-columns: repeat(2, var(--icon-col, 92px));
+  gap: 8px 10px;
+  --icon-glyph: 40px;
+  --icon-font: 11px;
+  --icon-col: 92px;
+}
+
+.icons[data-size="small"] {
+  --icon-glyph: 28px;
+  --icon-font: 9px;
+  --icon-col: 72px;
+}
+.icons[data-size="medium"] {
+  --icon-glyph: 40px;
+  --icon-font: 11px;
+  --icon-col: 92px;
+}
+.icons[data-size="large"] {
+  --icon-glyph: 52px;
+  --icon-font: 13px;
+  --icon-col: 116px;
 }
 
 .icon {
@@ -44,9 +63,9 @@
 }
 
 .iconGlyph {
-  width: 30px;
-  height: 30px;
-  padding: 5px;
+  width: var(--icon-glyph, 40px);
+  height: var(--icon-glyph, 40px);
+  padding: 6px;
   color: #1c1f26;
   background: #eef1f8;
   border: 1px solid rgba(0, 0, 0, 0.25);
@@ -59,7 +78,7 @@
 }
 
 .iconLabel {
-  font-size: 10px;
+  font-size: var(--icon-font, 11px);
   line-height: 1.25;
   letter-spacing: 0.02em;
   text-align: center;

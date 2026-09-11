@@ -34,6 +34,10 @@ interface ExperienceState {
 
   /** User action: press the power control. Only valid from idle. */
   powerOn: () => void;
+  /** Simulated OS action: replay the boot sequence (Start menu → Restart). */
+  restart: () => void;
+  /** Simulated OS action: power off (Start menu → Shut Down). Same as reset(). */
+  shutDown: () => void;
   /** Internal/dev: jump to a specific phase. */
   setPhase: (phase: Phase) => void;
   /** Dev: step to the next phase. */
@@ -63,6 +67,14 @@ export const useExperienceStore = create<ExperienceState>()((set, get) => ({
       if (get().phase === "poweringOn") set({ phase: "booting" });
     }, 850);
   },
+  restart: () => {
+    set({ phase: "poweringOn", view: "desk" });
+    setTimeout(() => {
+      if (get().phase === "poweringOn") set({ phase: "booting" });
+    }, 850);
+  },
+  shutDown: () => set({ phase: "idle", view: "desk" }),
+
   setPhase: (phase) => set({ phase }),
   advancePhase: () => {
     const i = PHASE_ORDER.indexOf(get().phase);

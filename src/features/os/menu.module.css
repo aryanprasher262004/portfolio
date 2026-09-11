@@ -1,0 +1,78 @@
+/* Shared themed popup-menu styling for ContextMenu + StartMenu. */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 49;
+}
+
+.menu {
+  position: absolute;
+  z-index: 50;
+  min-width: 168px;
+  padding: 4px;
+  background: #171b26;
+  border: 1px solid #3a4864;
+  border-radius: 3px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-mono);
+}
+
+.itemRow {
+  position: relative;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 10px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: #dbe1ee;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.item:hover,
+.item:focus-visible {
+  background: #2a3448;
+  color: #fff;
+  outline: none;
+}
+
+.item[data-active="true"] {
+  color: var(--scene-accent-green);
+}
+
+.item:disabled {
+  color: #5b6478;
+  cursor: default;
+}
+.item:disabled:hover {
+  background: transparent;
+}
+
+.hintTag {
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: #6b7386;
+}
+
+.separator {
+  height: 1px;
+  margin: 4px 2px;
+  background: #2c3547;
+}
+
+.submenu {
+  position: absolute;
+  top: -4px;
+  left: 100%;
+  margin-left: 2px;
+}

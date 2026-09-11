@@ -57,9 +57,7 @@ export function Login() {
         <button type="submit" className={styles.button}>
           LOGIN
         </button>
-        <p className={styles.hint}>
-          any input works — this is not a real account
-        </p>
+        <p className={styles.hint}>Hint: the door isn&apos;t very picky.</p>
       </form>
     </div>
   );

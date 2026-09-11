@@ -42,8 +42,8 @@ issue appears.
 - [x] **1.3** Vertical prototype foundation — `<Scene>` with aspect-preserving responsive framing (two states: DESK/INTRO whole-scene, MONITOR/WORK dominant+readable), p6 plate, HTML `<MonitorScreen>` overlay tracking the artwork, GSAP camera push (verified smooth at 1440/1366/1920 via Playwright), damped mouse parallax. `zustand` + `gsap` + `@gsap/react` + `playwright-core`(dev) added
 - [x] **1.4** Power + monitor prototype — real power hotspot on the PC (hover glyph/glow/tooltip), PC off/on wash + fan bloom, staged monitor wake, **no auto-zoom**; decoupled `phase` vs `view` (DEC-014); user-operated retro `FocusToggle` (FOCUS ⇄ EXIT) drives a reversible GSAP desk⇄monitor move; tighter bezel (screen ≈82% vw in focus); flex-centred framing verified at 1366/1440/1536/1920, no console errors. Clips not used yet.
 - [x] **1.5** Monitor OS prototype — `features/os/`: staged `Loading` (`LOADING N OF 6`, honest timed steps), fake `Login` (any input, Enter or click submits), `Desktop` with six icons (About/Projects/Experience+Education/Skills+Achievements/Resume/Contact) + `Taskbar` (Start, live clock), shared CSS `Wallpaper` (day/dusk). `FocusToggle` relocated top-right to clear the taskbar. Verified 1366/1440/1536/1920, reduced-motion path, keyboard login, 0 console errors.
-- [ ] **1.6** Projects interaction prototype — reusable `<Window>` primitive, Projects icon opens window, close, focus, scrollable placeholder project content, dragging if reliable
-- [ ] **1.7** Prototype review — run the full flow in-browser; evaluate visual quality, overlay alignment, responsiveness, transition continuity, performance, whether video/hybrid actually works
+- [x] **1.6** Projects interaction prototype — `features/windows/` (`Window`, `windowStore`, `WindowManager`) + `features/apps/projects/ProjectsContent` (names only, no invented facts). Drag by title bar (pointer capture), focus/z-index, close, scroll, taskbar chip. Verified 1366/1440/1536/1920, 0 console errors.
+- [x] **1.7** Prototype review + desktop UX pass (owner hands-on feedback) — settingsStore (icon size + wallpaper tone, localStorage), themed desktop right-click menu (View/Wallpaper/Settings), functional Start menu (Search stub, Settings, Restart, Shut Down — reuse the phase/view machine), taskbar minimize/restore, `src/data/projects.ts` (data-driven Projects), fixed a real drag-tracking bug (screen-px deltas weren't divided by the OS render scale), friendlier login hint. Verified 1366/1440/1536/1920, 0 console errors. Remaining items homed to Phases 5/6/10/12 + RISKS.md RISK-017.
 - [ ] **1.8** DEC-012 final rendering decision — only after seeing the working prototype: hybrid sufficient / pure 2.5D better / reduce video / real 3D actually necessary. Record in `DECISIONS.md`. **STOP for owner approval before production implementation.**
 
 ---
@@ -97,11 +97,11 @@ issue appears.
 ## Phase 5 — Monitor OS
 
 - [ ] **5.1** Screen architecture
-- [ ] **5.2** Login
+- [ ] **5.2** Login — incl. configurable avatar (Phase 1.7 has a static one)
 - [ ] **5.3** Login transition
 - [ ] **5.4** Desktop
-- [ ] **5.5** Wallpaper
-- [ ] **5.6** Icons
+- [ ] **5.5** Wallpaper — secure remote/URL wallpaper support (Phase 1.7 ships 2 local CSS tones only; do not add arbitrary remote image loading without sanitization/allowlisting — see RISKS.md)
+- [ ] **5.6** Icons — drag/reposition + persisted layout (Phase 1.7 ships size only, via Settings)
 - [ ] **5.7** Taskbar
 - [ ] **5.8** Clock
 - [ ] **5.9** Window manager
@@ -117,9 +117,9 @@ issue appears.
 
 ## Phase 6 — Portfolio content
 
-- [ ] **6.1** Content schema
+- [ ] **6.1** Content schema — incl. a lightweight searchable index (Start-menu Search is UI-only through Phase 1.7)
 - [ ] **6.2** About
-- [ ] **6.3** Projects
+- [ ] **6.3** Projects — visual redesign so it reads as a real portfolio app, not an admin list (Phase 1.7 makes it data-driven via src/data/projects.ts; layout polish still pending)
 - [ ] **6.4** Experience + Education
 - [ ] **6.5** Skills + Achievements
 - [ ] **6.6** Resume
@@ -176,7 +176,7 @@ issue appears.
 - [ ] **10.2** Visual consistency
 - [ ] **10.3** Pixel-art consistency
 - [ ] **10.4** Typography
-- [ ] **10.5** Cursor
+- [ ] **10.5** Cursor — custom pixel/retro cursor (deferred from Phase 1.7 priority list; keep native accessibility behaviour)
 - [ ] **10.6** Window polish
 - [ ] **10.7** Loading polish
 - [ ] **10.8** Audio polish
