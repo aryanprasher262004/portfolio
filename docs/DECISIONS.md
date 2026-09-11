@@ -284,3 +284,86 @@ short-term, but exactly what would force a rebuild on a renderer swap).
 **Status:** Future compatibility constraint. **Not a V1 requirement** — Three.js/
 R3F remains not installed, not implemented (DEC-012). No V1 code changes required
 by this entry; it governs what future scene work must not break.
+
+---
+
+## DEC-016 — Global OS UI scale via a single `--ui-scale` CSS custom property
+
+**Decision:** The owner's UX pass on the Phase 2 production plate (2026-09-12)
+required "comfortably readable without browser zoom" text/icons across the
+desktop, login, taskbar, menus, and windows, plus a 4-tier icon/UI size setting
+(Small/Medium/Large/Extra Large, default Large). Rather than threading a size
+prop through every OS/window/app component, `OS.tsx` sets one inline CSS custom
+property, `--ui-scale`, on its root element, computed from
+`UI_SCALE[iconSize]` (`settingsStore.ts`). Every nested stylesheet (Desktop,
+Window, Taskbar, StartMenu/ContextMenu, Login, Loading, SettingsContent,
+ProjectsContent) reads `var(--ui-scale, 1)` in `calc()` for font-size and
+icon/spacing dimensions. Custom properties inherit through the DOM regardless
+of CSS Module boundaries, so this is a single point of control with no prop
+drilling and no per-component size-tier duplication (replaces the old
+per-component `data-size` variant blocks).
+
+**Consequences:**
+
+- `features/scene` never reads or sets `--ui-scale` — it is entirely an
+  `features/os` concern, consistent with DEC-006/DEC-015 (renderer-independent
+  OS). The scene's own logical-canvas contract (`OS_LOGICAL` in
+  `sceneConfig.ts`) is unchanged by this.
+- `features/windows/windowStore.ts` reads the current `iconSize` (via
+  `useSettingsStore.getState()`) to keep its taskbar-height assumption
+  (`taskbarH()`) in sync with the _visually rendered_ taskbar height for
+  window centering/clamping — a store-to-store read, not a scene coupling.
+- Extending to a 5th tier later means one `UI_SCALE` map entry plus one
+  `SIZES`/option-list entry in `ContextMenu.tsx` and `SettingsContent.tsx` —
+  no new CSS variant blocks.
+
+**Alternatives considered:** per-component size props threaded from Desktop
+down; separate `data-size` attribute + hardcoded CSS blocks per tier (the
+prior desktop-icon-only approach).
+**Rejected because:** both duplicate the same scale logic per component and
+don't reach outside `Desktop` (login/windows/menus were left small).
+**Status:** Decided and implemented, Phase 2 UX pass.
+
+---
+
+## DEC-017 — Data-driven wallpapers (`src/data/wallpapers.ts`)
+
+**Decision:** Replaced the placeholder CSS-gradient day/dusk wallpaper with
+three real pixel-art images (owner-provided:
+`public/assets/wallpapers/{morning,fantasy,space}.png`), rendered via
+`background-image` + `cover`/`center` (never stretched). The list lives in
+`src/data/wallpapers.ts` (`WALLPAPERS: WallpaperOption[]`, `DEFAULT_WALLPAPER`,
+`isWallpaperId`, `getWallpaper`) per the existing DEC-009 typed-content-module
+pattern — adding a future wallpaper requires only an asset + one array entry,
+no other code changes. `settingsStore`'s persisted field renamed
+`wallpaperTone` (`"day"|"dusk"`) → `wallpaper` (a `WallpaperId`); `loadInitial`
+validates the persisted value against `WALLPAPERS` and falls back to
+`DEFAULT_WALLPAPER` ("morning") for any unrecognized value, which transparently
+migrates old `day`/`dusk` localStorage data with no special-case branch.
+**Status:** Decided and implemented, Phase 2 UX pass.
+
+---
+
+## DEC-018 — Stronger monitor-focus camera push; power button is the plate's real button
+
+**Decision:** Two scene-only adjustments from the same UX pass:
+
+1. `WORK_SCREEN_WIDTH_FRAC` (0.82 → 0.99) and `OS_SCALE` (`{0.82,1.32}` →
+   `{1.0,1.75}`) in `sceneConfig.ts` make the monitor-focus camera push much
+   stronger — the screen (not the bezel) fills essentially the full viewport
+   width, so OS content renders 15–60% larger across the four target
+   viewports than before, while the full screen (including taskbar text)
+   stays on-screen — only the physical bezel/desk crop out. Desk view framing
+   (`DESK_FILL`/`DESK_TOP_CROP_FRAC`) is untouched. Purely `features/scene`
+   scale/translate math — no new mechanism, still reversible via the existing
+   `FocusToggle`.
+2. `PowerControl` no longer draws its own power icon or idle-pulsing ring —
+   `desk-off.png` already shows a real power button on the PC tower, so the
+   component is now an invisible hotspot (positioned via the already-measured
+   `POWER_HOTSPOT_RECT`) with a hover-only glow and `:active` press feedback.
+   `PcState` (which persists after `PowerControl` unmounts on power-on) lost
+   its obsolete OFF multiply-wash — the new plate's fans are already correctly
+   rendered off/dark — and gained a persistent soft "on" glow anchored to
+   `POWER_HOTSPOT_RECT` for as long as the PC stays powered.
+
+**Status:** Decided and implemented, Phase 2 UX pass.

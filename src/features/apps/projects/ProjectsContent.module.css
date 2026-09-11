@@ -1,14 +1,14 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 12px;
+  gap: calc(10px * var(--ui-scale, 1));
+  padding: calc(12px * var(--ui-scale, 1));
 }
 
 .card {
   display: flex;
-  gap: 10px;
-  padding: 10px;
+  gap: calc(10px * var(--ui-scale, 1));
+  padding: calc(10px * var(--ui-scale, 1));
   background: #fff;
   border: 1px solid #d7dce6;
   border-radius: 3px;
@@ -16,8 +16,8 @@
 
 .thumb {
   flex: none;
-  width: 56px;
-  height: 56px;
+  width: calc(56px * var(--ui-scale, 1));
+  height: calc(56px * var(--ui-scale, 1));
   background: repeating-linear-gradient(
     45deg,
     #dfe4ee,
@@ -36,14 +36,14 @@
 
 .name {
   margin: 0 0 2px;
-  font-size: 13px;
+  font-size: calc(13px * var(--ui-scale, 1));
   font-weight: 700;
   letter-spacing: 0.02em;
 }
 
 .meta {
   margin: 0 0 4px;
-  font-size: 10px;
+  font-size: calc(10px * var(--ui-scale, 1));
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #7a8296;
@@ -51,14 +51,15 @@
 
 .desc {
   margin: 0 0 8px;
-  font-size: 11px;
+  font-size: calc(11px * var(--ui-scale, 1));
   line-height: 1.4;
   color: #4a4f5c;
 }
 
 .link {
-  padding: 4px 10px;
-  font: 10px var(--font-mono);
+  padding: calc(4px * var(--ui-scale, 1)) calc(10px * var(--ui-scale, 1));
+  font-family: var(--font-mono);
+  font-size: calc(10px * var(--ui-scale, 1));
   font-weight: 700;
   letter-spacing: 0.08em;
   color: #7a8296;

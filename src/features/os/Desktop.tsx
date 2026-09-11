@@ -39,8 +39,7 @@ export function Desktop() {
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
   const [startOpen, setStartOpen] = useState(false);
   const openWindow = useWindowStore((s) => s.openWindow);
-  const iconSize = useSettingsStore((s) => s.iconSize);
-  const wallpaperTone = useSettingsStore((s) => s.wallpaperTone);
+  const wallpaper = useSettingsStore((s) => s.wallpaper);
 
   function handleIconClick(id: string) {
     setSelected(id);
@@ -63,8 +62,8 @@ export function Desktop() {
       onClick={() => setSelected(null)}
       onContextMenu={handleContextMenu}
     >
-      <Wallpaper tone={wallpaperTone} />
-      <div className={styles.icons} data-size={iconSize}>
+      <Wallpaper id={wallpaper} />
+      <div className={styles.icons}>
         {APPS.map(({ id, label, Icon }) => (
           <button
             key={id}

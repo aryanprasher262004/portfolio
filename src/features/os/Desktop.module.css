@@ -7,39 +7,20 @@
 
 .icons {
   position: absolute;
-  top: 18px;
-  left: 18px;
+  top: calc(18px * var(--ui-scale, 1));
+  left: calc(18px * var(--ui-scale, 1));
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(2, var(--icon-col, 92px));
-  gap: 8px 10px;
-  --icon-glyph: 40px;
-  --icon-font: 11px;
-  --icon-col: 92px;
-}
-
-.icons[data-size="small"] {
-  --icon-glyph: 28px;
-  --icon-font: 9px;
-  --icon-col: 72px;
-}
-.icons[data-size="medium"] {
-  --icon-glyph: 40px;
-  --icon-font: 11px;
-  --icon-col: 92px;
-}
-.icons[data-size="large"] {
-  --icon-glyph: 52px;
-  --icon-font: 13px;
-  --icon-col: 116px;
+  grid-template-columns: repeat(2, calc(92px * var(--ui-scale, 1)));
+  gap: calc(8px * var(--ui-scale, 1)) calc(10px * var(--ui-scale, 1));
 }
 
 .icon {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 8px 4px;
+  gap: calc(4px * var(--ui-scale, 1));
+  padding: calc(8px * var(--ui-scale, 1)) calc(4px * var(--ui-scale, 1));
   color: #fff;
   background: transparent;
   border: 1px solid transparent;
@@ -63,9 +44,9 @@
 }
 
 .iconGlyph {
-  width: var(--icon-glyph, 40px);
-  height: var(--icon-glyph, 40px);
-  padding: 6px;
+  width: calc(40px * var(--ui-scale, 1));
+  height: calc(40px * var(--ui-scale, 1));
+  padding: calc(6px * var(--ui-scale, 1));
   color: #1c1f26;
   background: #eef1f8;
   border: 1px solid rgba(0, 0, 0, 0.25);
@@ -78,7 +59,7 @@
 }
 
 .iconLabel {
-  font-size: var(--icon-font, 11px);
+  font-size: calc(11px * var(--ui-scale, 1));
   line-height: 1.25;
   letter-spacing: 0.02em;
   text-align: center;

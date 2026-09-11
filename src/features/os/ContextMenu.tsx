@@ -2,22 +2,15 @@
 
 import { useState } from "react";
 import { useWindowStore } from "@/features/windows/windowStore";
-import {
-  type IconSize,
-  type WallpaperTone,
-  useSettingsStore,
-} from "@/stores/settingsStore";
+import { WALLPAPERS } from "@/data/wallpapers";
+import { type IconSize, useSettingsStore } from "@/stores/settingsStore";
 import styles from "./menu.module.css";
 
 const SIZES: { id: IconSize; label: string }[] = [
-  { id: "small", label: "Small icons" },
-  { id: "medium", label: "Medium icons" },
-  { id: "large", label: "Large icons" },
-];
-
-const TONES: { id: WallpaperTone; label: string }[] = [
-  { id: "day", label: "Day" },
-  { id: "dusk", label: "Dusk" },
+  { id: "small", label: "Small" },
+  { id: "medium", label: "Medium" },
+  { id: "large", label: "Large" },
+  { id: "xlarge", label: "Extra Large" },
 ];
 
 /** Desktop right-click menu: View (icon size), Wallpaper, Settings. */
@@ -33,8 +26,8 @@ export function ContextMenu({
   const [sub, setSub] = useState<"view" | "wallpaper" | null>(null);
   const iconSize = useSettingsStore((s) => s.iconSize);
   const setIconSize = useSettingsStore((s) => s.setIconSize);
-  const wallpaperTone = useSettingsStore((s) => s.wallpaperTone);
-  const setWallpaperTone = useSettingsStore((s) => s.setWallpaperTone);
+  const wallpaper = useSettingsStore((s) => s.wallpaper);
+  const setWallpaper = useSettingsStore((s) => s.setWallpaper);
   const openWindow = useWindowStore((s) => s.openWindow);
 
   return (
@@ -89,18 +82,18 @@ export function ContextMenu({
           </button>
           {sub === "wallpaper" && (
             <div className={`${styles.menu} ${styles.submenu}`}>
-              {TONES.map((t) => (
+              {WALLPAPERS.map((w) => (
                 <button
-                  key={t.id}
+                  key={w.id}
                   type="button"
                   className={styles.item}
-                  data-active={wallpaperTone === t.id}
+                  data-active={wallpaper === w.id}
                   onClick={() => {
-                    setWallpaperTone(t.id);
+                    setWallpaper(w.id);
                     onClose();
                   }}
                 >
-                  {t.label}
+                  {w.label}
                 </button>
               ))}
             </div>

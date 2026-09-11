@@ -1,37 +1,38 @@
-import {
-  type IconSize,
-  type WallpaperTone,
-  useSettingsStore,
-} from "@/stores/settingsStore";
+import { WALLPAPERS } from "@/data/wallpapers";
+import { type IconSize, useSettingsStore } from "@/stores/settingsStore";
 import styles from "./SettingsContent.module.css";
 
-const SIZES: IconSize[] = ["small", "medium", "large"];
-const TONES: WallpaperTone[] = ["day", "dusk"];
+const SIZES: { id: IconSize; label: string }[] = [
+  { id: "small", label: "Small" },
+  { id: "medium", label: "Medium" },
+  { id: "large", label: "Large" },
+  { id: "xlarge", label: "Extra Large" },
+];
 
 /**
- * Minimal settings surface — icon size + wallpaper tone today. Extend here
+ * Minimal settings surface — icon/UI size + wallpaper today. Extend here
  * (audio, theme) as those phases land; do not build a settings backend.
  */
 export function SettingsContent() {
   const iconSize = useSettingsStore((s) => s.iconSize);
   const setIconSize = useSettingsStore((s) => s.setIconSize);
-  const wallpaperTone = useSettingsStore((s) => s.wallpaperTone);
-  const setWallpaperTone = useSettingsStore((s) => s.setWallpaperTone);
+  const wallpaper = useSettingsStore((s) => s.wallpaper);
+  const setWallpaper = useSettingsStore((s) => s.setWallpaper);
 
   return (
     <div className={styles.root}>
       <section className={styles.group}>
-        <h3 className={styles.heading}>Desktop icon size</h3>
+        <h3 className={styles.heading}>View / icon size</h3>
         <div className={styles.options}>
           {SIZES.map((size) => (
-            <label key={size} className={styles.option}>
+            <label key={size.id} className={styles.option}>
               <input
                 type="radio"
                 name="iconSize"
-                checked={iconSize === size}
-                onChange={() => setIconSize(size)}
+                checked={iconSize === size.id}
+                onChange={() => setIconSize(size.id)}
               />
-              {size}
+              {size.label}
             </label>
           ))}
         </div>
@@ -40,15 +41,15 @@ export function SettingsContent() {
       <section className={styles.group}>
         <h3 className={styles.heading}>Wallpaper</h3>
         <div className={styles.options}>
-          {TONES.map((tone) => (
-            <label key={tone} className={styles.option}>
+          {WALLPAPERS.map((w) => (
+            <label key={w.id} className={styles.option}>
               <input
                 type="radio"
-                name="wallpaperTone"
-                checked={wallpaperTone === tone}
-                onChange={() => setWallpaperTone(tone)}
+                name="wallpaper"
+                checked={wallpaper === w.id}
+                onChange={() => setWallpaper(w.id)}
               />
-              {tone}
+              {w.label}
             </label>
           ))}
         </div>

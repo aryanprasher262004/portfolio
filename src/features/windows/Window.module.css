@@ -19,8 +19,8 @@
   align-items: center;
   justify-content: space-between;
   flex: none;
-  height: 26px;
-  padding: 0 6px 0 10px;
+  height: calc(26px * var(--ui-scale, 1));
+  padding: 0 calc(6px * var(--ui-scale, 1)) 0 calc(10px * var(--ui-scale, 1));
   background: #12151d;
   border-bottom: 1px solid #333f54;
   cursor: grab;
@@ -33,7 +33,7 @@
 }
 
 .titleText {
-  font-size: 11px;
+  font-size: calc(11px * var(--ui-scale, 1));
   font-weight: 700;
   letter-spacing: 0.08em;
   color: #8b96ab;
@@ -46,8 +46,8 @@
 .close {
   display: grid;
   place-items: center;
-  width: 18px;
-  height: 18px;
+  width: calc(18px * var(--ui-scale, 1));
+  height: calc(18px * var(--ui-scale, 1));
   padding: 0;
   color: #9aa6ba;
   background: transparent;
@@ -63,8 +63,8 @@
 }
 
 .close svg {
-  width: 9px;
-  height: 9px;
+  width: calc(9px * var(--ui-scale, 1));
+  height: calc(9px * var(--ui-scale, 1));
 }
 
 .content {

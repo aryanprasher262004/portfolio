@@ -15,22 +15,22 @@
 
 .count {
   margin: 0;
-  font-size: 28px;
+  font-size: calc(28px * var(--ui-scale, 1));
   font-weight: 700;
   letter-spacing: 0.12em;
 }
 
 .step {
   margin: 0;
-  font-size: 14px;
+  font-size: calc(14px * var(--ui-scale, 1));
   letter-spacing: 0.1em;
   color: #8b97ac;
   min-height: 1.2em;
 }
 
 .barTrack {
-  width: 320px;
-  height: 14px;
+  width: calc(320px * var(--ui-scale, 1));
+  height: calc(14px * var(--ui-scale, 1));
   padding: 2px;
   background: #12151d;
   border: 1px solid #333f54;

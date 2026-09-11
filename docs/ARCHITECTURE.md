@@ -101,7 +101,11 @@ children`. Capabilities: title-bar drag, focus-on-pointer-down (raises z), close
 - `experienceStore` — phase enum (`IDLE | POWER_READY | POWERED_ON | BOOTING | LOGIN |
 DESKTOP`), guarded transitions, `introSeen` (localStorage-backed, Phase 7).
 - `windowStore` — open windows, z-order stack, focused id, rects.
-- `settingsStore` — audio on/off, reduced-motion override, (future) theme.
+- `settingsStore` — `iconSize` (small/medium/large/xlarge, default large) and
+  `wallpaper` (id from `src/data/wallpapers.ts`), localStorage-backed. Drives
+  the global `--ui-scale` CSS variable set once at the OS root (`OS.tsx`) —
+  every OS/window/app stylesheet reads it for font-size/icon dimensions
+  (cascades through the DOM across CSS Module boundaries).
 
 State is readable/writable outside React (GSAP callbacks).
 

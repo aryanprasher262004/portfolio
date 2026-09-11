@@ -2,6 +2,7 @@
 
 import { type FormEvent, useId } from "react";
 import { useExperienceStore } from "@/stores/experienceStore";
+import { useSettingsStore } from "@/stores/settingsStore";
 import { Wallpaper } from "./Wallpaper";
 import styles from "./Login.module.css";
 
@@ -11,6 +12,7 @@ import styles from "./Login.module.css";
  */
 export function Login() {
   const setPhase = useExperienceStore((s) => s.setPhase);
+  const wallpaper = useSettingsStore((s) => s.wallpaper);
   const userId = useId();
   const passId = useId();
 
@@ -21,7 +23,7 @@ export function Login() {
 
   return (
     <div className={styles.root}>
-      <Wallpaper tone="dusk" />
+      <Wallpaper id={wallpaper} />
       <form className={styles.card} onSubmit={handleSubmit}>
         <div className={styles.avatar} aria-hidden>
           <svg viewBox="0 0 16 16" shapeRendering="crispEdges">

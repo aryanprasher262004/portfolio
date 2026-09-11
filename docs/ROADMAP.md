@@ -50,16 +50,35 @@ issue appears.
 
 ## Phase 2 — Art + assets
 
-- [ ] **2.1** Final scene concept
-- [ ] **2.2** Generate scene artwork
-- [ ] **2.3** Generate alternative compositions
-- [ ] **2.4** Select final direction
-- [ ] **2.5** Separate layers (2.5D) **or** generate 3D model (real 3D)
-- [ ] **2.6** Blender cleanup — only if required
-- [ ] **2.7** Prepare interactive pieces (screen / power button / fan)
-- [ ] **2.8** Optimize assets
-- [ ] **2.9** Browser asset test
-- [ ] **2.10** Final asset approval
+_(Revised post-DEC-012 — owner approved, 2026-09-12. Hybrid 2.5D means no 3D
+model/Blender/Meshy path; the plate is a still image, always replaceable
+without touching `features/os`/`windows`/`apps`. Treat the selected plate as
+the **V1 production candidate**, not an irreversible final asset — later
+polish may regenerate it without an architecture change.)_
+
+- [x] **2.1** Confirm scene concept — reuse Phase 1.1/1.2 direction (blue-grey,
+      frontal), no re-exploration. Generation brief produced for owner-run
+      image generation (`PHASE_1_REFERENCE_ANALYSIS.md` § Phase 2.1).
+- [x] **2.2** Generate production plate (owner-run) — owner generated and
+      delivered `public/assets/scene/desk-off.png` (1536x1024).
+- [x] **2.3** Select final plate (owner approval) — "V3" approved as the V1
+      production candidate (not treated as irreversible/final).
+- [x] **2.4** Re-measure & finalize scene config — `SCREEN_RECT` /
+      `SCREEN_SURFACE_RECT` / `PC_RECT` / `POWER_HOTSPOT_RECT` remeasured
+      against `desk-off.png` (luminance edge-detection + crop verification) and
+      applied in `features/scene/sceneConfig.ts`. `OS_LOGICAL.height` adjusted
+      1280x740 → 1280x609 to match the new plate's screen aspect (≈2.10, no
+      letterboxing/bezel gaps); `OS_H` synced in `features/windows/windowStore.ts`
+      only (the DEC-015-flagged duplication — no other os/windows/apps change).
+      Full-flow Playwright regression at 1366/1440/1536/1920 — 0 console errors,
+      Desk View + Monitor View framing both hold. Asset not yet compressed
+      (source PNG, ~1.6MB) — deferred to 2.5.
+- [ ] **2.5** Optimize + integrate asset — compress/convert `desk-off.png`
+      (e.g. WebP/AVIF, resize check), confirm no visible quality loss at the
+      4 target viewports
+- [ ] **2.6** Full-flow regression verify — power → loading → login → desktop
+      → Projects at 1366/1440/1536/1920; tune framing constants only if needed
+- [ ] **2.7** Final asset approval — Phase 2 exit
 
 ---
 

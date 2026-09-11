@@ -2,6 +2,7 @@
 
 import { useWindowStore } from "@/features/windows/windowStore";
 import { useExperienceStore } from "@/stores/experienceStore";
+import { UI_SCALE, useSettingsStore } from "@/stores/settingsStore";
 import styles from "./menu.module.css";
 
 /**
@@ -13,12 +14,13 @@ export function StartMenu({ onClose }: { onClose: () => void }) {
   const openWindow = useWindowStore((s) => s.openWindow);
   const restart = useExperienceStore((s) => s.restart);
   const shutDown = useExperienceStore((s) => s.shutDown);
+  const scale = useSettingsStore((s) => UI_SCALE[s.iconSize]);
 
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div
         className={styles.menu}
-        style={{ left: 0, bottom: 34, minWidth: 200 }}
+        style={{ left: 0, bottom: 34 * scale, minWidth: 200 * scale }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className={styles.itemRow}>

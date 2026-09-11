@@ -8,8 +8,8 @@
 .menu {
   position: absolute;
   z-index: 50;
-  min-width: 168px;
-  padding: 4px;
+  min-width: calc(168px * var(--ui-scale, 1));
+  padding: calc(4px * var(--ui-scale, 1));
   background: #171b26;
   border: 1px solid #3a4864;
   border-radius: 3px;
@@ -28,8 +28,8 @@
   justify-content: space-between;
   gap: 10px;
   width: 100%;
-  padding: 7px 10px;
-  font-size: 11px;
+  padding: calc(7px * var(--ui-scale, 1)) calc(10px * var(--ui-scale, 1));
+  font-size: calc(11px * var(--ui-scale, 1));
   letter-spacing: 0.04em;
   color: #dbe1ee;
   text-align: left;
@@ -59,7 +59,7 @@
 }
 
 .hintTag {
-  font-size: 9px;
+  font-size: calc(9px * var(--ui-scale, 1));
   letter-spacing: 0.06em;
   color: #6b7386;
 }

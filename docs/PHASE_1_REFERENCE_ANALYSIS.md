@@ -345,3 +345,82 @@ not unstyled.
 power on → smooth controlled transition toward monitor → monitor large + readable →
 loading → login → desktop → six icons → Projects opens → scrolls → closes → scene
 still usable across normal laptop aspect ratios.
+
+---
+
+# Phase 2.1 — Scene Concept Confirmation + Generation Brief
+
+> Confirmed 2026-09-12. No re-exploration of rejected directions (green wall,
+> angled 3/4 view). This is the brief for owner-run image generation (Phase 2.2).
+> The selected result is the **V1 production candidate**, not an irreversible
+> final asset — later polish may regenerate it without an architecture change.
+
+## Confirmed direction (reused, not re-decided)
+
+Direction **B** (blue-grey room) from Phase 1.1/1.2: desaturated blue-grey wall,
+warm brown wood desk, near-black matte hardware, orange PC accent, warm-yellow
+lamp. Frontal camera, slight downward tilt (not the angled p1/p2 3/4 view).
+Moderate pixelation — chunky, voxel-influenced, polished silhouettes; not
+hyper-real, not Minecraft, not flat pixel art.
+
+## What must change vs. the current plate (`p6.png`)
+
+1. **Monitor bigger/more dominant** — target screen ≈ 65–70% of frame width
+   (current plate ≈ 54%), same near-frontal geometry.
+2. **Screen perfectly blank** — flat neutral light fill, no reflections/UI/logo.
+3. **Thin, believable bezel** — large usable screen, not a thick black frame.
+4. **PC power area clearly usable** — add one distinct small power
+   button/LED on the tower's **top-front edge** (there isn't one today; our
+   HTML power hotspot currently has no matching visual anchor).
+5. **Enough desk/environment preserved** — lamp (left), PC tower with 3
+   glowable circular fans (right), keyboard + mouse + small plant accent,
+   warm wood desk. Don't crop these out of the composition itself (our scene
+   code crops per-viewport, not the art).
+6. **Composition must survive our viewport crop** — keep the monitor + PC +
+   lamp within the horizontal-center ~90% of frame (our framing fills viewport
+   width and crops top/bottom, never sides, so nothing essential should sit at
+   the extreme left/right edge).
+7. **High resolution, no watermark, no text, no compression artifacts.**
+
+## Three.js-compatibility note (does not change the brief)
+
+This stays a single flat 2D image (never a 3D model/file) — that's what keeps
+`features/scene` swappable later per DEC-015. Nothing about the art itself
+needs to anticipate a future 3D scene.
+
+## Copy-paste generation prompt
+
+> A stylized 3D-rendered desk computer setup, voxel-influenced but polished —
+> moderate pixelation, chunky geometry, smooth clean silhouettes. Not
+> Minecraft-style, not flat pixel art, not photorealistic. Frontal camera
+> angle, slight downward tilt, symmetric composition. Desaturated blue-grey
+> wall background, warm medium-brown wood-plank desk. Center: a large
+> flat-screen monitor on a low stand, dominant in the frame (roughly two-thirds
+> of the image width), completely blank screen with a flat neutral
+> light-grey/off-white fill (no reflections, no UI, no logos), thin dark
+> bezel. Left of the monitor: a small warm-yellow glowing cube-shaped desk
+> lamp on a slim post. Right of the monitor: a matte black PC tower with a
+> glass side panel showing three circular fans capable of glowing orange, and
+> one small, clearly visible power button or LED indicator on the top-front
+> edge of the case. On the desk in front: a low-profile black keyboard, a
+> mouse on a small mousepad, and one small potted plant accent near the PC.
+> Soft ambient lighting, minimal hard shadows, gentle emissive glow from the
+> lamp and PC fans only. Clean, high resolution, no watermark, no text, no
+> logos. Aspect ratio approximately 4:3 to 16:10.
+
+## Technical spec
+
+- Format: PNG (or lossless), high resolution (≥ 2400 px wide preferred).
+- Aspect: ~4:3–16:10 (exact ratio doesn't matter — Phase 2.4 re-measures rects
+  against whatever is delivered; the scene code is aspect-agnostic).
+- No baked-in wallpaper/icons/taskbar/text inside the screen — it must be
+  a flat blank fill, always.
+- Deliver 1 primary composition; 1–2 close variants optional for comparison.
+
+## What Phase 2.2–2.4 do with the result (for continuity, not owner action)
+
+2.2 generation happens outside this session. 2.3 = owner picks one. 2.4 =
+re-measure `SCREEN_RECT`/`SCREEN_SURFACE_RECT`/`PC_RECT`/`POWER_HOTSPOT_RECT`
+in `features/scene/sceneConfig.ts` against the chosen plate (same measurement
+method as Phase 1.1: a local Swift/AVFoundation script, no ffmpeg) and decide
+only the masks/crops actually used.
