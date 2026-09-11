@@ -180,3 +180,107 @@ exit awkward.
 **Alternatives:** single state enum where `DESKTOP` implies the monitor framing.
 **Rejected because:** removes the visitor's choice; makes "return to desk while the
 OS keeps running" impossible without a hack.
+
+---
+
+## DEC-012 — RESOLVED: Hybrid 2.5D (no real 3D)
+
+**Decision:** A single static plate (the desk/PC/room artwork) + a GSAP "camera"
+(scale + translate transform on that plate, never a real 3D projection) + a real
+HTML/CSS monitor overlay for all OS content + small CSS/GSAP overlays for
+lighting/state (PC on/off wash + bloom, screen blackout/glare, focus/restore move).
+**No `three` / `@react-three/fiber` / `@react-three/drei`.** Video clips remain
+optional/decorative, not load-bearing.
+
+**Evidence (Phases 1.3–1.7, all Playwright-verified at 1366/1440/1536/1920, 0
+console errors each time):**
+
+- The desk→monitor "camera push" (DESK ⇄ MONITOR framing) is a plain
+  `scale`/`translate` on one image and reads as convincing depth/zoom — no
+  parallax-layer separation was even required.
+- Power-on (PC glow bloom) and monitor wake (blackout fade) were fully solved with
+  CSS/GSAP; the two AI-generated video clips (`pcon.mp4`, `monitoron.mp4`) were
+  never wired in and are unused.
+- The entire OS (loading, login, desktop, taskbar, context/start menus, draggable
+  windows, Settings) is real interactive HTML/CSS/React inside the monitor overlay
+  — nothing here needed WebGL.
+- Focus/restore must be smoothly **reversible**; pre-rendered video is naturally
+  one-directional, while the GSAP transform is trivially reversible — an argument
+  against making video load-bearing, not for it.
+- No interaction across 7 subphases (power, focus, drag, minimize, menus) revealed
+  a visual or functional gap that real 3D would have closed.
+
+**What we build with going forward:**
+
+- **Still images** — the plate is the sole visual backbone of the desk/PC/room
+  (regenerated/higher-res in Phase 2, per the art direction already documented).
+- **HTML/CSS/React** — 100% of OS content and all interactive chrome. This is
+  where all real interactivity lives (unchanged from DEC-006's insulation rule).
+- **GSAP** — the camera move and any future timed sequences (boot stagger,
+  window transitions). No physics, no 3D animation loop.
+- **Video** — optional, decorative only (e.g. a possible cross-fade flourish on
+  the one-way power-on beat in a later polish pass). Never required for the core
+  loop; the experience must keep working with the clips deleted.
+
+**Three.js/R3F: REJECTED for V1.** Not deferred-as-likely, not required — actively
+rejected given the evidence above. `features/scene/**` (DEC-006) stays the only
+place that would ever change if a genuinely new need appeared (e.g. free-camera
+exploration), but nothing in this project's scope calls for that.
+
+**Alternatives considered:** Option A (real 3D scene), Option C (video as the
+primary boot mechanism), Option D (hybrid with real 3D monitor geometry) — see the
+original DEC-012 entry above for full candidate descriptions.
+**Rejected because:** each adds engineering/asset/perf cost with no corresponding
+visitor-facing improvement over what the hybrid 2.5D approach already delivers.
+
+**STOP satisfied: this is the recorded decision, pending owner approval before
+Phase 2 production asset work begins.**
+
+---
+
+## DEC-015 — Scene/OS boundary is a long-term compatibility constraint, not just a V1 convenience
+
+**Decision:** The DEC-006 insulation rule (`features/os/**`, `features/windows/**`,
+`features/apps/**` never import from `features/scene`) is upgraded from "keeps
+Phase 1's rendering decision cheap" to a **standing architecture constraint**:
+after V1 ships (Hybrid 2.5D, DEC-012), the owner may experiment with replacing the
+physical desk/PC/monitor scene with a Three.js/R3F `ThreeScene`. That swap must
+**not** require rebuilding the monitor OS. Concretely, going forward:
+
+- `features/scene/**` owns the physical world: rendering, camera/framing, plate
+  or 3D geometry, screen-rect measurement.
+- `features/os/**`, `features/windows/**`, `features/apps/**`, and portfolio data
+  (`src/data/**`) stay renderer-independent — no plate coordinates, no scene
+  imports, ever.
+- `experienceStore`/`settingsStore`/`windowStore` expose **semantic** actions and
+  state (`powerOn`, `restart`, `shutDown`, `enterMonitor`/`exitMonitor`,
+  `iconSize`, window open/close/focus/minimize) — never image/pixel coordinates.
+  Verified true today: no scene imports anywhere in os/windows/apps; the stores
+  already read this way.
+- Monitor content (the whole OS) stays plain reusable React/HTML, rendered into
+  whatever container the active scene implementation hands it (today:
+  `MonitorScreen`'s `.osRoot`; later: a `ThreeScene`'s HTML-overlay/CSS3DRenderer
+  equivalent).
+- The future swap should read: `HybridScene → ThreeScene`, while `OS`, the window
+  system, apps, Settings, content, state, (future) Search, Login, and Taskbar are
+  reused unchanged.
+
+**Known nuance to watch (not fixed now, not a V1 requirement):** the OS's logical
+canvas size (1280×740) is currently a plain literal duplicated in
+`features/scene/sceneConfig.ts` (`OS_LOGICAL`), `features/windows/windowStore.ts`
+(`OS_W`/`OS_H`/`TASKBAR_H`), and `features/os/Desktop.tsx` (`OS_W`) — three places
+must agree by hand. This is _not_ a scene import (each file only has a local
+number) and is _not_ a plate coordinate, but it is a shared "OS viewport size"
+concept split across features. Fine for V1; worth centralizing (e.g. one
+`features/os` or `features/windows` constant that `sceneConfig.ts` reads, so the
+OS — not the scene — is the source of truth for its own logical resolution)
+before or during any future `ThreeScene` work.
+
+**Reason:** Owner wants a clean, low-risk path to experiment with real 3D for the
+physical scene post-V1 without a monitor-OS rewrite.
+**Alternatives:** couple the OS to scene-provided pixel rects directly (simpler
+short-term, but exactly what would force a rebuild on a renderer swap).
+**Rejected because:** defeats the stated future-compatibility goal.
+**Status:** Future compatibility constraint. **Not a V1 requirement** — Three.js/
+R3F remains not installed, not implemented (DEC-012). No V1 code changes required
+by this entry; it governs what future scene work must not break.

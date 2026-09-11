@@ -1,7 +1,7 @@
 # Architecture
 
 > How the system fits together. Foundation-level. Updated as phases land.
-> Rendering-approach specifics are **deferred** — see § Deferred at the bottom.
+> Rendering approach is **decided** (DEC-012, Phase 1.8) — hybrid 2.5D, no real 3D.
 
 ## Stack
 
@@ -14,7 +14,7 @@
 | Styling                          | CSS Modules + CSS custom-property design tokens    | No CSS-in-JS runtime. Tokens in `src/styles/tokens.css` (provisional until Phase 3).                    |
 | State                            | Zustand (sliced) + hand-rolled typed state machine | No XState. Added in the phase that needs it.                                                            |
 | Animation                        | GSAP (+ `@gsap/react`)                             | Single animation library. No Framer Motion. CSS for micro-interactions.                                 |
-| Rendering (desk/monitor visuals) | **UNDECIDED**                                      | Phase 1 compares real 3D / 2.5D / video / hybrid. No 3D deps installed yet.                             |
+| Rendering (desk/monitor visuals) | Hybrid 2.5D — single plate + GSAP camera (DEC-012) | Static plate, GSAP scale/translate camera, real HTML monitor overlay. No 3D.                            |
 | Deploy                           | Vercel (dashboard Git integration, DEC-013)        | `main` = production: `portfolio-delta-sand-34.vercel.app`. PR previews. No `vercel.json` / add-ons yet. |
 | Node                             | 22 (`.nvmrc`); `engines` floor `>=22`              |                                                                                                         |
 
@@ -63,6 +63,16 @@ scales, and (if needed) perspective-transforms that container.
   container full-viewport with no scene).
 - The accessible / mobile fallback = render the six app **content** components stacked,
   with zero rework, because they never depended on window chrome.
+- **Post-V1 (DEC-015):** this boundary is a standing constraint, not just a
+  Phase-1 convenience — it's what would let a future `ThreeScene` replace
+  `features/scene`'s Hybrid 2.5D implementation (DEC-012) without touching the
+  OS, window system, apps, settings, content, or state. `experienceStore` /
+  `settingsStore` / `windowStore` expose semantic actions/state, never plate
+  coordinates — verified true as of Phase 1.8. One known nuance: the OS's
+  logical canvas size (1280×740) is duplicated as a literal in `sceneConfig.ts`,
+  `windowStore.ts`, and `Desktop.tsx` — not a scene import, but worth
+  centralizing under `features/os`/`features/windows` before any future
+  `ThreeScene` work (see DEC-015).
 
 If OS code ever imports from `features/scene`, that is an architecture violation.
 
@@ -150,16 +160,22 @@ Per **YAGNI**: a directory is created in the phase that first needs it, not now.
 
 ---
 
-## Deferred — decided in Phase 1
+## Resolved in Phase 1 (was: Deferred)
 
-These are **intentionally unresolved.** Do not pre-empt them.
+- **Rendering architecture** — Hybrid 2.5D. **DEC-012**, decided Phase 1.8.
+- **`three` / `@react-three/fiber` / `@react-three/drei`** — **not installed**;
+  rejected for V1 (DEC-012). `features/scene/**` (DEC-006) stays the seam if a
+  concrete future need ever appears.
+- **Camera / depth "push toward monitor"** — GSAP `scale`+`translate` on the plate
+  (`features/scene/framing.ts`), decided Phase 1.3–1.4.
+- **On-screen monitor geometry** — `SCREEN_RECT`/`SCREEN_SURFACE_RECT` in
+  `features/scene/sceneConfig.ts`, measured from the plate, decided Phase 1.4–1.5.
+- **WebGL fallback tier** — not needed; nothing in the stack uses WebGL.
 
-| Item                                                                              | Resolved in          |
-| --------------------------------------------------------------------------------- | -------------------- |
-| Rendering architecture: real 3D / 2.5D / video / hybrid (DEC-012)                 | Phase 1.8            |
-| Whether `three` / `@react-three/fiber` / `@react-three/drei` are installed at all | Phase 1.8            |
-| Asset pipeline: layered PNG/WebP vs merged GLB vs transition video                | Phase 2              |
-| Camera / depth "push toward monitor" implementation technique                     | Phase 1.6            |
-| Exact on-screen monitor geometry + how logical screen maps into the art           | Phase 1.5 / 3.4      |
-| Loader real-progress wiring (staged honest transition until then)                 | Phase 4.8 / 9        |
-| Whether a dedicated WebGL-failure fallback tier is needed                         | depends on Phase 1.8 |
+## Still deferred
+
+| Item                                                                | Resolved in                           |
+| ------------------------------------------------------------------- | ------------------------------------- |
+| Asset pipeline: how the regenerated plate/layers enter the repo     | Phase 2                               |
+| Loader real-progress wiring (staged honest transition until then)   | Phase 4.8 / 9                         |
+| Whether video clips are ever composited in as a decorative flourish | later polish pass, optional (DEC-012) |
