@@ -9,6 +9,7 @@ import {
 } from "react";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useViewportSize } from "@/lib/useViewportSize";
+import { OS } from "@/features/os/OS";
 import { type Phase, useExperienceStore } from "@/stores/experienceStore";
 import { computeFraming } from "./framing";
 import { MonitorScreen } from "./MonitorScreen";
@@ -16,7 +17,6 @@ import { PcState } from "./PcState";
 import { PowerControl } from "./PowerControl";
 import { CAMERA_MOVE, PARALLAX_MAX_PX, PLATE } from "./sceneConfig";
 import { SceneDevControls } from "./SceneDevControls";
-import { ScreenPlaceholder } from "./ScreenPlaceholder";
 import styles from "./Scene.module.css";
 
 gsap.registerPlugin(useGSAP);
@@ -127,7 +127,7 @@ export function Scene() {
               view={powered ? view : null}
               onToggleView={toggleView}
             >
-              <ScreenPlaceholder phase={phase} />
+              <OS />
             </MonitorScreen>
             {phase === "idle" && <PowerControl onPress={powerOn} />}
           </div>

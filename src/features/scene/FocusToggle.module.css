@@ -1,7 +1,7 @@
 .btn {
   position: absolute;
   right: 3%;
-  bottom: 4%;
+  top: 3%;
   z-index: 5;
   display: grid;
   place-items: center;
@@ -46,7 +46,7 @@
 
 .hint {
   right: 0;
-  bottom: calc(100% + 8px);
+  top: calc(100% + 8px);
 }
 
 .btn:hover .hint,

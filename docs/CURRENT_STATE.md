@@ -4,12 +4,17 @@
 > Update at the end of every meaningful subphase.
 
 **Current Phase:** 1 — Visual + technical prototypes
-**Current Subphase:** 1.5 — Monitor OS prototype (next)
-**Status:** 1.4 COMPLETE — awaiting go-ahead for 1.5
-**Current Branch:** `feat/foundation-docs` (Phase 0 + Phase 1 docs; not merged)
+**Current Subphase:** 1.6 — Projects interaction prototype (next)
+**Status:** 1.5 COMPLETE — awaiting go-ahead for 1.6
+**Current Branch:** `feat/monitor-os` (not merged; `main` is at `a57f673`)
 
 ## Last Completed
 
+- **Merges** — `feat/foundation-docs` → `main` (`066e8bf`) and `feat/interaction-hints`
+  → `main` (`a57f673`), both pushed. Production redeployed and verified after each.
+- **InteractionHint** — reusable retro-themed hint component (hover + keyboard
+  focus via `aria-describedby`); `PowerControl` glyph now visible at idle with a
+  gentle glow pulse (stops on power-on); `FocusToggle` uses the same hint.
 - **1.4 — Power + monitor interaction.** Decoupled `phase` (idle→poweringOn→booting→
   login→desktop) and `view` (desk/monitor) in `experienceStore` (DEC-014). Real power
   interaction: `<PowerControl>` hotspot on the PC top-front (hover glyph + glow +
@@ -26,18 +31,25 @@
   `playwright-core` (dev).
 - **1.1–1.2 — Reference analysis + prototype spec** (`PHASE_1_REFERENCE_ANALYSIS.md`).
 
+- **1.5 — Monitor OS prototype.** `src/features/os/` (new, insulated from
+  `features/scene` per DEC-006): `OS.tsx` switches on store `phase`; `Loading`
+  (staged `LOADING N OF 6`, real timers, reduced-motion fallback); `Login` (fake
+  auth — any input, submit via click or Enter — `setPhase("desktop")`);
+  `Desktop` (six-icon grid, click-to-select only, no windows yet) + `Taskbar`
+  (Start button, live clock); shared `Wallpaper` (CSS-only day/dusk). Deleted
+  the now-superseded `ScreenPlaceholder`. `FocusToggle` moved to top-right so it
+  no longer overlaps the taskbar.
+
 ## Currently Working On
 
-- Nothing in progress. `localhost:3000` serves the prototype. Dev helpers:
-  `?phase=booting|login|desktop`, `?view=monitor`, plus the temp `<SceneDevControls>`
-  panel (bottom-left). Normal flow works without any of them.
+- Nothing in progress. Dev helpers: `?phase=booting|login|desktop`,
+  `?view=monitor`, `?dev=1` (temp `<SceneDevControls>` panel).
 
 ## Next Exact Task
 
-- **1.5 — Monitor OS prototype**: loading screen (`LOADING 6 OF 6`), login screen,
-  login transition, desktop, six icons, taskbar / basic chrome — all real React in
-  the 1280×740 OS root. Note: `<FocusToggle>` currently sits where the taskbar will
-  go (bottom-right) — reconcile then.
+- **1.6 — Projects interaction prototype**: reusable `<Window>` primitive,
+  Projects icon opens it, close/focus/scroll, placeholder project content
+  clearly marked as placeholder.
 
 ## Blockers
 
@@ -64,18 +76,22 @@
 - `docs/PHASE_1_REFERENCE_ANALYSIS.md` — 1.1 findings + 1.2 spec
 - `src/features/scene/` — `Scene.tsx`, `framing.ts`, `sceneConfig.ts` (all rects +
   tunables), `MonitorScreen.tsx`, `PowerControl.tsx`, `PcState.tsx`,
-  `FocusToggle.tsx` (+ temp `ScreenPlaceholder`, `SceneDevControls`)
+  `FocusToggle.tsx`, `InteractionHint.tsx` (+ temp `SceneDevControls`)
+- `src/features/os/` — `OS.tsx`, `Loading.tsx`, `Login.tsx`, `Desktop.tsx`,
+  `Taskbar.tsx`, `Wallpaper.tsx`, `icons.tsx` (insulated from `features/scene`)
 - `src/stores/experienceStore.ts` — `phase` + `view` (DEC-014)
 - `src/lib/{useViewportSize,useReducedMotion}.ts` · `src/app/icon.svg`
 - `src/styles/tokens.css` (`--scene-*`) · `public/prototype/` (temp p6 + clips)
 
-## Verification (1.4)
+## Verification (1.5)
 
 - `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` ✅ · `pnpm format:check` ✅
-- Playwright (real Chrome), full flow at 1366×768 / 1440×900 / 1536×864 / 1920×1080:
-  power → PC on → screen wakes with **desk framing unchanged** (scale 1.08 before and
-  after); focus → GSAP move to screen ≈82% vw, centred; restore → back to desk;
-  power stays on; focus/restore stable over repeat cycles; **0 console errors**.
+- Playwright (real Chrome) at 1366×768 / 1440×900 / 1536×864 / 1920×1080: full
+  power → loading → login → desktop → focus → restore flow, **0 console errors**
+  at every size.
+- Reduced-motion: loading shortcuts to login (~500ms), no errors.
+- Login accepts Enter-key submit (not just click); desktop icon click sets
+  visual selection (no window yet — that's 1.6).
 - Still **no `three`/`@react-three/*`**; pnpm-only; Node 22 pin intact.
 
 ## Notes For Next Session
@@ -88,4 +104,3 @@
   `features/scene/**` touches rendering. Never import scene into os/apps.
 - YAGNI on directories — create a folder in the phase that first needs it.
 - pnpm only. Node 22. Six apps, not eight. One window component.
-- `feat/foundation-docs` still needs to be merged to `main` (owner decides when).
