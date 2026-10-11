@@ -3,94 +3,32 @@
 > Operational source of truth. Keep this CURRENT, not a history book.
 > Update at the end of every meaningful subphase.
 
-**Current Phase:** 2 — Art + assets (revised scope, see ROADMAP.md)
-**Current:** Phase 2 COMPLETE (owner approved visuals 2026-10-11) — see
-`handoffs/PHASE_2_HANDOFF.md`
-**Next:** Phase 3 — physical power-on experience (revised scope **proposed,
-awaiting owner approval**; do not implement before approval)
-**Status:** 2.1-2.7 COMPLETE. The full power-on
-sequence remains planned, not yet implemented (see Next Exact Task).
-**Current Branch:** `feat/monitor-os` (commits `b321692`, `941e4d4`, `74f6996`,
-`1979a83`, `4606766` — not pushed; not merged; `main` is at
-`a57f673`)
+**Current Phase:** 3 — Physical power-on — **COMPLETE** (owner approved
+2026-10-11, `handoffs/PHASE_3_HANDOFF.md`)
+**Next:** Phase 4 — revised scope **proposed, awaiting owner approval**; do
+not start before approval
+**Status:** COMPLETE — committed on `feat/power-on`, not pushed
+**Current Branch:** `feat/power-on` (from `feat/monitor-os` @ `5e18279`;
+nothing pushed/merged; `main` is at `a57f673`)
 
 ## Last Completed
 
-- **2.7 — Final asset approval.** Owner approved plate + wallpapers. Phase 2
-  handoff written.
-- **2.6 — Full-flow regression (verification only, no code change).** Reused
-  2.5's 4-viewport flow run; added the missing checks (see Verification).
-- **2.5 — Asset optimization.** `desk-off` + 3 wallpapers re-encoded to WebP
-  q95 (`-sharp_yuv`), native resolution: 8.41 MB → 1.48 MB (plate 1.61 MB →
-  99 KB), PSNR 45 dB plate / 38–40 dB wallpapers, no visible loss at 3× zoom.
-  `PLATE.src` + `src/data/wallpapers.ts` repointed (only code change). PNG
-  masters moved to `references/source/` (local; also in git at `1979a83`).
-  Removed unused `public/prototype/` (`plate.png` — zero `src` refs; `clip1/2`
-  — byte-identical to `references/experiments/`). Standard in `ASSET_PIPELINE.md`.
-- **Post-2.4 UX fix pass** (owner hands-on review of the integrated plate).
-  Removed `PcState`'s obsolete OFF wash (new plate is already correctly dark);
-  `PowerControl` no longer draws its own icon/idle ring — it's an invisible
-  hotspot over the plate's real button (hover glow, `:active` press feedback);
-  `PcState` gained a persistent "on" glow anchored to `POWER_HOTSPOT_RECT`
-  (DEC-018). Monitor-focus camera push made much stronger
-  (`WORK_SCREEN_WIDTH_FRAC` 0.82→0.99, `OS_SCALE` `{0.82,1.32}`→`{1.0,1.75}`) —
-  screen fills ~full viewport width with no chrome clipped, 15–60% bigger OS
-  content across the 4 target viewports (DEC-018). Global `--ui-scale` CSS
-  variable added (DEC-016): `iconSize` extended to 4 tiers
-  (small/medium/**large**/xlarge, default now large), driving font-size/icon
-  dimensions across Desktop, Window, Taskbar, StartMenu/ContextMenu, Login,
-  Loading, Settings, and Projects content. Wallpaper is now data-driven
-  (DEC-017): `src/data/wallpapers.ts` + 3 real images (Morning/Fantasy/Space),
-  replacing the old day/dusk CSS gradient; `settingsStore`'s persisted
-  `wallpaperTone` field safely migrates to `wallpaper` (unknown/legacy values
-  fall back to Morning). Full Playwright regression at 4 viewports incl.
-  Extra-Large tier and Focus↔Restore reversibility — 0 console errors.
-- **2.2-2.4 — Production plate integrated + scene remeasured.** Owner approved
-  "V3" (`public/assets/scene/desk-off.png`, 1536x1024) as the V1 production
-  candidate. Remeasured `SCREEN_RECT`/`SCREEN_SURFACE_RECT`/`PC_RECT`/
-  `POWER_HOTSPOT_RECT` via luminance edge-detection + crop verification.
-  `OS_LOGICAL` changed to `{1280, 609}` to match the new screen's aspect
-  (≈2.10) — no letterboxing/bezel gaps; `OS_H` synced in
-  `features/windows/windowStore.ts` only. Full Playwright regression (real
-  Chrome, 4 viewports) — 0 console errors, Desk View + Monitor View framing
-  both hold, power-on still doesn't auto-zoom (DEC-014 intact). Asset not yet
-  compressed — deferred to 2.5.
-- **2.1 — Scene concept confirmed + generation brief.** Reused Phase 1.1/1.2
-  direction B (blue-grey), no re-exploration. Brief (composition, must-change
-  list, copy-paste prompt) in `PHASE_1_REFERENCE_ANALYSIS.md` § Phase 2.1.
-- **1.8 — DEC-012 decided: Hybrid 2.5D.** Single plate + GSAP camera
-  (scale/translate) + real HTML monitor overlay. **No `three`/R3F** — rejected
-  for V1. Video clips optional/decorative only, unused. DEC-015 records the
-  scene/OS boundary as a standing post-V1 compatibility constraint (future
-  `ThreeScene` swap must not require rebuilding the OS). See `DECISIONS.md`
-  and `docs/handoffs/PHASE_1_HANDOFF.md`.
-- **1.6–1.7 — Window system + desktop UX pass** (commit `941e4d4`).
-  `features/windows/` (`Window`, `windowStore`, `WindowManager`),
-  `features/apps/{projects,settings}/`, `src/data/projects.ts` (data-driven),
-  desktop right-click menu, functional Start menu, taskbar minimize/restore,
-  `settingsStore` (icon size + wallpaper, localStorage). Fixed a real drag
-  1:1-cursor-tracking bug.
-- **1.5 — Monitor OS prototype** (commit `b321692`). `features/os/` (`OS`,
-  `Loading`, `Login`, `Desktop`, `Taskbar`, `Wallpaper`) — insulated from
-  `features/scene` (DEC-006).
-- **1.1–1.4** — reference analysis, prototype spec, scene foundation, power +
-  monitor-focus interaction. See git log / `docs/handoffs/PHASE_0_HANDOFF.md`
-  for anything older.
+- **Phase 3** — physical power-on: press → LED → fans twitch/spin (DEC-021) →
+  warm glow → mini-display SYS/OK/READY → local clock → keyboard underglow →
+  monitor flicker-wake → Loading; Focus only at Login; never zooms. Choreography
+  in `features/scene/usePowerSequence.ts` (DEC-019).
+- **Phase 2** — `handoffs/PHASE_2_HANDOFF.md`.
 
 ## Currently Working On
 
-- Nothing in progress. Dev helpers: `?phase=booting|login|desktop`,
-  `?view=monitor`, `?dev=1` (temp `<SceneDevControls>` panel).
+- Nothing. Dev helpers: `?phase=booting|login|desktop`, `?view=monitor`,
+  `?dev=1`.
 
 ## Next Exact Task
 
-- **Phase 3 (pending approval)** — owner to approve the revised Phase 3
-  proposal (physical power-on). Update `ROADMAP.md` Phase 3 once approved.
-- **Planned power sequence (future phase, not started — do not lose):** click
-  Power → button press → LED → fans twitch/start → orange glow → mini-display
-  boot → keyboard LED → monitor flicker/wake → Loading → Focus button → user
-  chooses Monitor View. **Power-on must NOT auto-zoom** (DEC-014). Lives
-  entirely in `features/scene` (DEC-006/015). Builds on DEC-018's button/glow.
+- Owner to approve the revised Phase 4 proposal; then rewrite `ROADMAP.md`
+  Phase 4 (log a DEC for the re-scope) and start 4.1.
+- No visual changes to the Phase 3 sequence (owner-approved as-is).
 
 ## Deferred from 1.7 (homed in ROADMAP.md — not scope creep, just not yet)
 
@@ -112,9 +50,7 @@ sequence remains planned, not yet implemented (see Next Exact Task).
 
 - `public/assets/scene/desk-off.webp` — **V1 production plate** ("V3", owner-
   approved, 1536x1024). Contains a small unidentified "mini-display" device on
-  the desk between the keyboard and the plant pot (roughly x:0.67-0.73,
-  y:0.57-0.64 of the plate, rough eyeball only) — reserved for a future
-  animated overlay, not implemented, no `sceneConfig.ts` constant added yet.
+  the desk — now measured (`MINI_DISPLAY_RECT`) and animated (`MiniDisplay`).
 - `public/assets/wallpapers/{morning,fantasy,space}.webp` — real wallpapers
   (1586x992, cover-fit), data-driven via `src/data/wallpapers.ts` (DEC-017).
 - `references/source/` — lossless PNG masters of the above (re-encode from
@@ -137,54 +73,32 @@ sequence remains planned, not yet implemented (see Next Exact Task).
 - `docs/PHASE_1_REFERENCE_ANALYSIS.md` — 1.1 findings + 1.2 spec
 - `src/features/scene/` — camera/framing/monitor-overlay (`Scene`, `framing`,
   `sceneConfig`, `MonitorScreen`, `PowerControl`, `PcState`, `FocusToggle`,
-  `InteractionHint` + temp `SceneDevControls`)
+  `InteractionHint` + temp `SceneDevControls`) and the power-on layer
+  (`usePowerSequence`, `MiniDisplay`, `KeyboardGlow`)
 - `src/features/os/` — `OS`, `Loading`, `Login`, `Desktop`, `Taskbar`,
   `Wallpaper`, `ContextMenu`, `StartMenu`, `icons` (insulated from `scene`)
 - `src/features/windows/` — `Window`, `windowStore`, `WindowManager`
 - `src/features/apps/{projects,settings}/` — chrome-free app content
 - `src/stores/{experienceStore,settingsStore}.ts` · `src/data/{projects,wallpapers}.ts`
 
-## Verification (latest: 2.6)
+## Verification (latest: Phase 3.8)
 
-- Build output (`.next/static` + `.next/server/app`) references exactly 4 image
-  URLs — the 4 WebPs — all present in `public/`. No `/prototype` or `.png`
-  asset refs in `src/` or build (only historical measurement comments in
-  `sceneConfig.ts`). Browser requests: only the WebPs, at every viewport.
-- Framing (1366/1440/1536/1920, prod build): monitor overlay ↔ plate
-  `SCREEN_RECT` error ≤0.03px in Desk View (off + on), Monitor View, and after
-  Restore; Monitor View fills 99.0% width, fully in viewport; no scrolled
-  containers. Plate offset after Restore ≈1.9px = pointer parallax (max 12px).
-- OS (1440): drag 1:1, minimize/restore/close, context-menu wallpaper + icon
-  size, Settings wallpaper + size, `--ui-scale` applies, `localStorage`
-  persists across reload, reload lands idle, power-on doesn't auto-zoom,
-  Start → Restart → Login, Shut Down → idle. 0 console errors, 0 4xx/5xx.
-- Test note: Playwright locator `.click()` auto-scrolls `overflow:hidden`
-  ancestors of the transformed stage and corrupts geometry — use coordinate
-  `page.mouse.click` for scene/OS tests. Not an app bug (real clicks: no scroll).
-
-### 2.5
-
-- `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` ✅ · `pnpm format:check` ✅
-- Playwright (real Chrome, `pnpm start` prod build) at 1366/1440/1536/1920:
-  plate loads as WebP (1536×1024 natural), power → loading → login → Monitor
-  View → desktop → Projects window → Restore, **0 console errors, 0 4xx/5xx**,
-  no auto-zoom after power-on, all 3 wallpaper WebPs served `image/webp`.
-  Desk View + Monitor View screenshots: composition/alignment unchanged.
-
-### Previous (post-2.4 UX fix pass)
-
-- `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` ✅ · `pnpm format:check` ✅
-- Playwright (real Chrome) at 1366×768 / 1440×900 / 1536×864 / 1920×1080: full
-  power → loading → login → desktop flow, **0 console errors** at every size.
-  Also verified: monitor-focus framing at all 4 sizes (no chrome clipped),
-  Extra-Large UI tier (no layout overlap), Focus↔Restore reversibility, hover/
-  press feedback on the power hotspot, persistent on-glow after power-on,
-  wallpaper picker (Morning/Fantasy/Space).
-- Icon/UI size (**large** default) + wallpaper change and persist to
-  `localStorage`; Settings window reflects the same state. Drag tracks the
-  cursor 1:1. Minimize hides the window and keeps the taskbar chip; restore
-  brings it back focused. Start-menu Restart replays the boot sequence to
-  Login; Shut Down returns to the idle desk. Still no `three`/`@react-three/*`.
+- `pnpm lint` ✅ · `typecheck` ✅ · `build` ✅ · `format:check` ✅ · insulation
+  intact (no os/windows/apps/stores imports of `features/scene`).
+- Playwright, prod build (`pnpm start`), 1366/1440/1536/1920: Loading ~2.16 s,
+  Login ~4.65 s after click; stage scale unchanged through the whole sequence
+  (no auto-zoom); Focus never shown before Login; fan overlays ≤0.03 px from
+  measured ring centres; all 3 fans turning; mini shows local time; monitor
+  overlay ↔ plate ≤0.03 px in Desk / Monitor / after Restore; Monitor View 99%
+  width; 0 console errors, 0 4xx/5xx.
+- 1440 lifecycle: Restart (fans keep turning, mini reboots to SYS, Focus at
+  Login); Shut Down (fan step/450 ms 142°→82°→39°→15°→4°→0, all lights 0);
+  interrupted boot → fans stopped, no inline residue, re-power works.
+- Reduced motion: Login at ~0.84 s, lights on instantly, fan overlay
+  `display:none`, shut-down instant.
+- Perf (headless Chrome): boot + cruise frames p50/p95/max 16.7/16.8/16.8 ms,
+  0 long tasks, cruise ~5% CPU, 0 layouts (60 style recalcs/s from the 3 fan
+  transforms).
 
 ## Notes For Next Session
 

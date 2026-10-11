@@ -87,34 +87,41 @@ polish may regenerate it without an architecture change.)_
 
 ---
 
-## Phase 3 — Environment
+## Phase 3 — Physical power-on
 
-- [ ] **3.1** Scene / page container
-- [ ] **3.2** Background / environment
-- [ ] **3.3** Desk / computer setup
-- [ ] **3.4** Perspective / depth
-- [ ] **3.5** Lighting treatment
-- [ ] **3.6** Cursor response
-- [ ] **3.7** Interactive object highlighting
-- [ ] **3.8** Responsive framing
-- [ ] **3.9** Performance baseline
+_(Re-scoped 2026-10-11, DEC-020. Choreography architecture: DEC-019.)_
 
-**Exit:** the computer setup looks excellent before complex interaction is added.
+- [x] **3.1** Measure + choreography architecture — LED, glass panel, front
+      panel, mini-display, keyboard rects in `sceneConfig.ts`;
+      `usePowerSequence` GSAP timeline; store `completePowerOn()` + fallback.
+- [x] **3.2** Button press + power LED (multiply tint + tight halo, one
+      hesitant flick then steady).
+- [x] **3.3** Fans + warm glow — glass-panel interior, fan-rim light, wall
+      spill; fan motion = masked blade overlay with twitch → spin-up → cruise
+      (DEC-021; plate-crop rotation rejected).
+- [x] **3.4** Mini-display boot — SYS → SYS OK → READY → visitor's local time.
+- [x] **3.5** Keyboard LED — soft underglow pool (no key-mask needed so far).
+- [x] **3.6** Monitor flicker-wake → existing Loading; Focus offered only once
+      Login appears; power-on never zooms.
+- [x] **3.7** Reduced motion (no fan motion, instant lights), Restart (fans
+      keep turning, mini reboots), Shut Down (lights fade, fans coast ~2.5 s),
+      interrupted boot → clean idle → re-power.
+- [x] **3.8** Timing review + 4-viewport regression (prod build) + perf:
+      60 fps steady during boot and cruise, 0 long tasks, 0 layouts at cruise,
+      0 console errors. Owner hands-on review approved (2026-10-11).
+      **Phase 3 COMPLETE** — `handoffs/PHASE_3_HANDOFF.md`.
+
+**Exit:** powering on feels physical and restrained; the user chooses when to
+enter Monitor View.
 
 ---
 
-## Phase 4 — Power + boot
+## Phase 4 — Boot polish + audio
 
-- [ ] **4.1** Experience state architecture (`IDLE → POWER_READY → POWERED_ON → BOOTING → LOGIN → DESKTOP → APP_OPEN`)
-- [ ] **4.2** Initial interaction (cursor → object responds)
-- [ ] **4.3** Power interaction
-- [ ] **4.4** PC visual response
-- [ ] **4.5** Fan movement (if applicable)
-- [ ] **4.6** Monitor wake
-- [ ] **4.7** Camera / view push
-- [ ] **4.8** Loading screen
-- [ ] **4.9** Minimal audio (power / boot / click / login)
-- [ ] **4.10** Complete boot sequence verification
+- [ ] **4.1** Cursor response / interactive object highlighting (from old 3.6/3.7)
+- [ ] **4.2** Minimal audio (power / boot / click / login)
+- [ ] **4.3** Performance baseline (from old 3.9)
+- [ ] **4.4** Complete boot experience verification
 
 ---
 
