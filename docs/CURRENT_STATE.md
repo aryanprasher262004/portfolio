@@ -4,16 +4,22 @@
 > Update at the end of every meaningful subphase.
 
 **Current Phase:** 2 — Art + assets (revised scope, see ROADMAP.md)
-**Current:** Phase 2.5 complete (uncommitted — awaiting owner approval)
-**Next:** Phase 2.6 — full-flow regression verify (do not start without owner go-ahead)
-**Status:** 2.1-2.5 COMPLETE. Production images now WebP. The full power-on
+**Current:** Phase 2 COMPLETE (owner approved visuals 2026-10-11) — see
+`handoffs/PHASE_2_HANDOFF.md`
+**Next:** Phase 3 — physical power-on experience (revised scope **proposed,
+awaiting owner approval**; do not implement before approval)
+**Status:** 2.1-2.7 COMPLETE. The full power-on
 sequence remains planned, not yet implemented (see Next Exact Task).
 **Current Branch:** `feat/monitor-os` (commits `b321692`, `941e4d4`, `74f6996`,
-`1979a83` — not pushed; not merged; `main` is at
+`1979a83`, `4606766` — not pushed; not merged; `main` is at
 `a57f673`)
 
 ## Last Completed
 
+- **2.7 — Final asset approval.** Owner approved plate + wallpapers. Phase 2
+  handoff written.
+- **2.6 — Full-flow regression (verification only, no code change).** Reused
+  2.5's 4-viewport flow run; added the missing checks (see Verification).
 - **2.5 — Asset optimization.** `desk-off` + 3 wallpapers re-encoded to WebP
   q95 (`-sharp_yuv`), native resolution: 8.41 MB → 1.48 MB (plate 1.61 MB →
   99 KB), PSNR 45 dB plate / 38–40 dB wallpapers, no visible loss at 3× zoom.
@@ -78,8 +84,8 @@ sequence remains planned, not yet implemented (see Next Exact Task).
 
 ## Next Exact Task
 
-- **2.6 — Full-flow regression verify** (largely covered by 2.5's run below;
-  owner may fold it in), then **2.7** final asset approval → Phase 2 exit.
+- **Phase 3 (pending approval)** — owner to approve the revised Phase 3
+  proposal (physical power-on). Update `ROADMAP.md` Phase 3 once approved.
 - **Planned power sequence (future phase, not started — do not lose):** click
   Power → button press → LED → fans twitch/start → orange glow → mini-display
   boot → keyboard LED → monitor flicker/wake → Loading → Focus button → user
@@ -138,7 +144,25 @@ sequence remains planned, not yet implemented (see Next Exact Task).
 - `src/features/apps/{projects,settings}/` — chrome-free app content
 - `src/stores/{experienceStore,settingsStore}.ts` · `src/data/{projects,wallpapers}.ts`
 
-## Verification (latest: 2.5)
+## Verification (latest: 2.6)
+
+- Build output (`.next/static` + `.next/server/app`) references exactly 4 image
+  URLs — the 4 WebPs — all present in `public/`. No `/prototype` or `.png`
+  asset refs in `src/` or build (only historical measurement comments in
+  `sceneConfig.ts`). Browser requests: only the WebPs, at every viewport.
+- Framing (1366/1440/1536/1920, prod build): monitor overlay ↔ plate
+  `SCREEN_RECT` error ≤0.03px in Desk View (off + on), Monitor View, and after
+  Restore; Monitor View fills 99.0% width, fully in viewport; no scrolled
+  containers. Plate offset after Restore ≈1.9px = pointer parallax (max 12px).
+- OS (1440): drag 1:1, minimize/restore/close, context-menu wallpaper + icon
+  size, Settings wallpaper + size, `--ui-scale` applies, `localStorage`
+  persists across reload, reload lands idle, power-on doesn't auto-zoom,
+  Start → Restart → Login, Shut Down → idle. 0 console errors, 0 4xx/5xx.
+- Test note: Playwright locator `.click()` auto-scrolls `overflow:hidden`
+  ancestors of the transformed stage and corrupts geometry — use coordinate
+  `page.mouse.click` for scene/OS tests. Not an app bug (real clicks: no scroll).
+
+### 2.5
 
 - `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` ✅ · `pnpm format:check` ✅
 - Playwright (real Chrome, `pnpm start` prod build) at 1366/1440/1536/1920:

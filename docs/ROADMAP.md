@@ -78,9 +78,12 @@ polish may regenerate it without an architecture change.)_
       visible loss. PNG masters → `references/source/`. Dead `public/prototype/`
       removed. Standard recorded in `ASSET_PIPELINE.md`. Full flow re-verified
       at the 4 viewports.
-- [ ] **2.6** Full-flow regression verify — power → loading → login → desktop
-      → Projects at 1366/1440/1536/1920; tune framing constants only if needed
-- [ ] **2.7** Final asset approval — Phase 2 exit
+- [x] **2.6** Full-flow regression verify — power → loading → login → desktop
+      → Projects at 1366/1440/1536/1920 (2.5 run reused) + overlay↔plate
+      geometry, build-output asset audit, full OS feature pass. No framing
+      constants needed tuning. Zero code changes.
+- [x] **2.7** Final asset approval — owner approved plate + wallpapers
+      (2026-10-11). **Phase 2 COMPLETE** — `handoffs/PHASE_2_HANDOFF.md`.
 
 ---
 
