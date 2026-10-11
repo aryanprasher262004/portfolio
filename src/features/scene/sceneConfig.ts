@@ -1,14 +1,14 @@
 /**
  * Production scene configuration.
  *
- * Plate: `public/assets/scene/desk-off.png` (V1 production candidate, DEC-012 /
+ * Plate: `public/assets/scene/desk-off.webp` (V1 production candidate, DEC-012 /
  * Phase 2.3 — may be regenerated/improved later without an architecture change).
  * The plate keeps its native aspect ratio at all times. Reframing is proportional
  * scale + translate only (see `framing.ts`) — the artwork is never distorted.
  */
 
 export const PLATE = {
-  src: "/assets/scene/desk-off.png",
+  src: "/assets/scene/desk-off.webp",
   naturalWidth: 1536,
   naturalHeight: 1024,
 } as const;

@@ -6,6 +6,9 @@
   monitor proportions, pixel influence). These communicate intent, not final artwork.
 - `experiments/` — throwaway prototypes, spike outputs, and scratch assets used while
   comparing rendering approaches in Phase 1.
+- `source/` — lossless masters of shipped images (`scene/desk-off.png`,
+  `wallpapers/*.png`). Re-encode from these, never from the shipped WebP. Local
+  only (binaries here are untracked); also recoverable from git at `1979a83`.
 
 ## Rules
 

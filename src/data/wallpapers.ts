@@ -11,9 +11,9 @@ export interface WallpaperOption {
  * `public/assets/wallpapers/` and an entry here — no other code changes.
  */
 export const WALLPAPERS: WallpaperOption[] = [
-  { id: "morning", label: "Morning", src: "/assets/wallpapers/morning.png" },
-  { id: "fantasy", label: "Fantasy", src: "/assets/wallpapers/fantasy.png" },
-  { id: "space", label: "Space", src: "/assets/wallpapers/space.png" },
+  { id: "morning", label: "Morning", src: "/assets/wallpapers/morning.webp" },
+  { id: "fantasy", label: "Fantasy", src: "/assets/wallpapers/fantasy.webp" },
+  { id: "space", label: "Space", src: "/assets/wallpapers/space.webp" },
 ];
 
 export const DEFAULT_WALLPAPER: WallpaperId = "morning";

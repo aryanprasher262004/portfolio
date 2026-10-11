@@ -4,19 +4,23 @@
 > Update at the end of every meaningful subphase.
 
 **Current Phase:** 2 — Art + assets (revised scope, see ROADMAP.md)
-**Current:** Phase 2.4 complete
-**Next:** Phase 2.5 — production asset optimization/integration
-**Status:** 2.1-2.4 COMPLETE (production plate integrated + scene remeasured,
-plus the post-2.4 readability/UX fix pass) — checkpoint committed. Asset still
-uncompressed (source PNG); the full power-on sequence (button press → LED →
-fans start/glow → mini-display boot → keyboard LED → monitor wake → loading)
-remains planned, not yet implemented.
+**Current:** Phase 2.5 complete (uncommitted — awaiting owner approval)
+**Next:** Phase 2.6 — full-flow regression verify (do not start without owner go-ahead)
+**Status:** 2.1-2.5 COMPLETE. Production images now WebP. The full power-on
+sequence remains planned, not yet implemented (see Next Exact Task).
 **Current Branch:** `feat/monitor-os` (commits `b321692`, `941e4d4`, `74f6996`,
-plus this session's checkpoint commit — not pushed; not merged; `main` is at
+`1979a83` — not pushed; not merged; `main` is at
 `a57f673`)
 
 ## Last Completed
 
+- **2.5 — Asset optimization.** `desk-off` + 3 wallpapers re-encoded to WebP
+  q95 (`-sharp_yuv`), native resolution: 8.41 MB → 1.48 MB (plate 1.61 MB →
+  99 KB), PSNR 45 dB plate / 38–40 dB wallpapers, no visible loss at 3× zoom.
+  `PLATE.src` + `src/data/wallpapers.ts` repointed (only code change). PNG
+  masters moved to `references/source/` (local; also in git at `1979a83`).
+  Removed unused `public/prototype/` (`plate.png` — zero `src` refs; `clip1/2`
+  — byte-identical to `references/experiments/`). Standard in `ASSET_PIPELINE.md`.
 - **Post-2.4 UX fix pass** (owner hands-on review of the integrated plate).
   Removed `PcState`'s obsolete OFF wash (new plate is already correctly dark);
   `PowerControl` no longer draws its own icon/idle ring — it's an invisible
@@ -74,14 +78,13 @@ plus this session's checkpoint commit — not pushed; not merged; `main` is at
 
 ## Next Exact Task
 
-- **2.5 — Optimize + integrate asset.** Compress/convert
-  `public/assets/scene/desk-off.png` (currently ~1.6MB source PNG) — evaluate
-  WebP/AVIF via `next/image`, confirm no visible quality loss at the 4 target
-  viewports. Then **2.6** (already effectively re-verified this session, but
-  re-run after the compressed asset lands) and **2.7** (final asset approval).
-- **Planned power sequence (future work, not started):** button press → LED →
-  fans start/glow → mini-display boot → keyboard LED → monitor wake → loading.
-  See DEC-018 for the button/glow pieces already in place to build on top of.
+- **2.6 — Full-flow regression verify** (largely covered by 2.5's run below;
+  owner may fold it in), then **2.7** final asset approval → Phase 2 exit.
+- **Planned power sequence (future phase, not started — do not lose):** click
+  Power → button press → LED → fans twitch/start → orange glow → mini-display
+  boot → keyboard LED → monitor flicker/wake → Loading → Focus button → user
+  chooses Monitor View. **Power-on must NOT auto-zoom** (DEC-014). Lives
+  entirely in `features/scene` (DEC-006/015). Builds on DEC-018's button/glow.
 
 ## Deferred from 1.7 (homed in ROADMAP.md — not scope creep, just not yet)
 
@@ -101,13 +104,15 @@ plus this session's checkpoint commit — not pushed; not merged; `main` is at
 
 ## Assets
 
-- `public/assets/scene/desk-off.png` — **V1 production plate** ("V3", owner-
+- `public/assets/scene/desk-off.webp` — **V1 production plate** ("V3", owner-
   approved, 1536x1024). Contains a small unidentified "mini-display" device on
   the desk between the keyboard and the plant pot (roughly x:0.67-0.73,
   y:0.57-0.64 of the plate, rough eyeball only) — reserved for a future
   animated overlay, not implemented, no `sceneConfig.ts` constant added yet.
-- `public/assets/wallpapers/{morning,fantasy,space}.png` — real wallpapers
+- `public/assets/wallpapers/{morning,fantasy,space}.webp` — real wallpapers
   (1586x992, cover-fit), data-driven via `src/data/wallpapers.ts` (DEC-017).
+- `references/source/` — lossless PNG masters of the above (re-encode from
+  these; see `ASSET_PIPELINE.md`).
 - `references/concept/p1.png`, `p2.png` — green-wall direction (dev-only, not
   production)
 - `references/concept/p3.jpg`, `p6.png`, `p7.png` — blue-grey direction, earlier
@@ -133,7 +138,16 @@ plus this session's checkpoint commit — not pushed; not merged; `main` is at
 - `src/features/apps/{projects,settings}/` — chrome-free app content
 - `src/stores/{experienceStore,settingsStore}.ts` · `src/data/{projects,wallpapers}.ts`
 
-## Verification (latest: post-2.4 UX fix pass)
+## Verification (latest: 2.5)
+
+- `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` ✅ · `pnpm format:check` ✅
+- Playwright (real Chrome, `pnpm start` prod build) at 1366/1440/1536/1920:
+  plate loads as WebP (1536×1024 natural), power → loading → login → Monitor
+  View → desktop → Projects window → Restore, **0 console errors, 0 4xx/5xx**,
+  no auto-zoom after power-on, all 3 wallpaper WebPs served `image/webp`.
+  Desk View + Monitor View screenshots: composition/alignment unchanged.
+
+### Previous (post-2.4 UX fix pass)
 
 - `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` ✅ · `pnpm format:check` ✅
 - Playwright (real Chrome) at 1366×768 / 1440×900 / 1536×864 / 1920×1080: full

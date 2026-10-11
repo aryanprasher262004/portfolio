@@ -73,9 +73,11 @@ polish may regenerate it without an architecture change.)_
       Full-flow Playwright regression at 1366/1440/1536/1920 — 0 console errors,
       Desk View + Monitor View framing both hold. Asset not yet compressed
       (source PNG, ~1.6MB) — deferred to 2.5.
-- [ ] **2.5** Optimize + integrate asset — compress/convert `desk-off.png`
-      (e.g. WebP/AVIF, resize check), confirm no visible quality loss at the
-      4 target viewports
+- [x] **2.5** Optimize + integrate asset — plate + 3 wallpapers → WebP q95
+      (8.41 MB → 1.48 MB; plate 1.61 MB → 99 KB), native resolution kept, no
+      visible loss. PNG masters → `references/source/`. Dead `public/prototype/`
+      removed. Standard recorded in `ASSET_PIPELINE.md`. Full flow re-verified
+      at the 4 viewports.
 - [ ] **2.6** Full-flow regression verify — power → loading → login → desktop
       → Projects at 1366/1440/1536/1920; tune framing constants only if needed
 - [ ] **2.7** Final asset approval — Phase 2 exit
