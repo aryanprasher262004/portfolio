@@ -133,6 +133,11 @@ Detection + implementation = Phase 8. The decoupling that makes tier 3 cheap = n
 - CSS transitions/animations: hover, focus, spinners, small micro-interactions.
 - `useFrame` (if real 3D): only genuinely continuous 3D motion (e.g. fan rotation).
 - One central `prefersReducedMotion` helper every timeline consults.
+- **Power-on (DEC-019):** one GSAP timeline in `features/scene/usePowerSequence.ts`
+  animates `[data-fx]`/`[data-mini]` hooks between CSS-owned on/off states,
+  then `clearProps`; it calls `experienceStore.completePowerOn()` at the
+  monitor-wake beat. Never moves the camera. Fan motion: `fanMotion.ts`
+  (masked overlay, `timeScale`-driven spin — DEC-021).
 
 ## Directory map (target — folders created per-phase, not upfront)
 

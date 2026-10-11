@@ -1,0 +1,70 @@
+/* The device's own screen glass. `container-type` lets the text scale with
+   the plate (cqh) at every viewport and through the camera push. */
+.display {
+  position: absolute;
+  container-type: size;
+  transform-origin: 0 0;
+  border-radius: 6% / 12%;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    ellipse at 50% 45%,
+    rgba(255, 150, 80, 0.1) 0%,
+    rgba(255, 130, 60, 0.04) 70%
+  );
+  box-shadow: inset 0 0 0.4em rgba(0, 0, 0, 0.6);
+}
+
+.display[data-powered="true"] {
+  opacity: 1;
+}
+.display[data-powered="false"] {
+  transition: opacity 500ms ease;
+}
+
+.line {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15em;
+  font-family: var(--font-mono);
+  font-size: 40cqh;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  color: #ffb877;
+  text-shadow: 0 0 0.3em rgba(255, 140, 60, 0.55);
+  white-space: nowrap;
+  opacity: 0;
+}
+
+/* steady state: the clock (boot lines are timeline-only) */
+.display[data-powered="true"] [data-mini="clock"] {
+  opacity: 1;
+}
+
+.period {
+  font-size: 0.5em;
+  letter-spacing: 0.02em;
+}
+
+.caret {
+  animation: caret 0.5s steps(1) infinite;
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .display[data-powered="false"] {
+    transition: none;
+  }
+  .caret {
+    animation: none;
+  }
+}

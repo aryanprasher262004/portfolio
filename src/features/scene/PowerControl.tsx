@@ -1,14 +1,8 @@
-import type { CSSProperties } from "react";
 import { InteractionHint } from "./InteractionHint";
-import { POWER_HOTSPOT_RECT } from "./sceneConfig";
+import { POWER_HOTSPOT_RECT, rectStyle } from "./sceneConfig";
 import styles from "./PowerControl.module.css";
 
-const rectStyle: CSSProperties = {
-  left: `${POWER_HOTSPOT_RECT.left * 100}%`,
-  top: `${POWER_HOTSPOT_RECT.top * 100}%`,
-  width: `${POWER_HOTSPOT_RECT.width * 100}%`,
-  height: `${POWER_HOTSPOT_RECT.height * 100}%`,
-};
+const hotspotStyle = rectStyle(POWER_HOTSPOT_RECT);
 
 /**
  * Invisible hotspot over the plate's real, physical power button — no drawn
@@ -22,7 +16,7 @@ export function PowerControl({ onPress }: { onPress: () => void }) {
     <button
       type="button"
       className={styles.hotspot}
-      style={rectStyle}
+      style={hotspotStyle}
       onClick={onPress}
       aria-label="Power on the computer"
       aria-describedby="hint-power"

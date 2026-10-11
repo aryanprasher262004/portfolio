@@ -12,11 +12,14 @@ import { useViewportSize } from "@/lib/useViewportSize";
 import { OS } from "@/features/os/OS";
 import { type Phase, useExperienceStore } from "@/stores/experienceStore";
 import { computeFraming } from "./framing";
+import { KeyboardGlow } from "./KeyboardGlow";
+import { MiniDisplay } from "./MiniDisplay";
 import { MonitorScreen } from "./MonitorScreen";
 import { PcState } from "./PcState";
 import { PowerControl } from "./PowerControl";
 import { CAMERA_MOVE, PARALLAX_MAX_PX, PLATE } from "./sceneConfig";
 import { SceneDevControls } from "./SceneDevControls";
+import { usePowerSequence } from "./usePowerSequence";
 import styles from "./Scene.module.css";
 
 gsap.registerPlugin(useGSAP);
@@ -35,14 +38,19 @@ export function Scene() {
   const phase = useExperienceStore((s) => s.phase);
   const view = useExperienceStore((s) => s.view);
   const powerOn = useExperienceStore((s) => s.powerOn);
+  const completePowerOn = useExperienceStore((s) => s.completePowerOn);
   const setPhase = useExperienceStore((s) => s.setPhase);
   const toggleView = useExperienceStore((s) => s.toggleView);
   const setDevMode = useExperienceStore((s) => s.setDevMode);
 
   const powered = phase !== "idle";
-  // Backlight: PC glows during `poweringOn`, screen wakes as boot begins.
-  // No camera movement is tied to any of this — that is user-initiated only.
+  // The PC lights up during `poweringOn` (usePowerSequence); the screen wakes
+  // as boot begins. No camera movement is tied to any of this — entering the
+  // monitor is user-initiated only, and only offered once Login is up.
   const awake = powered && phase !== "poweringOn";
+  const canFocus = phase === "login" || phase === "desktop";
+
+  usePowerSequence(stageRef, phase, reduced, completePowerOn);
 
   // Dev/testing query flags: ?dev=1 (control panel), ?phase=booting, ?view=monitor
   useEffect(() => {
@@ -121,10 +129,12 @@ export function Scene() {
               height={PLATE.naturalHeight}
             />
             <PcState powered={powered} />
+            <MiniDisplay powered={powered} />
+            <KeyboardGlow powered={powered} />
             <MonitorScreen
               osScale={framing.osScale}
               awake={awake}
-              view={powered ? view : null}
+              view={canFocus ? view : null}
               onToggleView={toggleView}
             >
               <OS />

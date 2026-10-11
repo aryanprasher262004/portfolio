@@ -4,78 +4,157 @@
   pointer-events: none;
 }
 
-/* warm bloom that pulses once as the PC comes on (whole tower) */
-.bloom {
+.pc > * {
   position: absolute;
-  border-radius: 20%;
-  background: radial-gradient(
-    circle at 50% 55%,
-    color-mix(in srgb, var(--scene-accent-warm) 62%, transparent) 0%,
-    transparent 62%
-  );
   opacity: 0;
-  scale: 1.12;
-  mix-blend-mode: screen;
 }
 
-.pc[data-powered="true"] .bloom {
-  animation: bloom 1200ms ease-out;
+/* Steady ON state. Every layer's "on" opacity is exactly 1 — intensity lives
+   in the gradients — so the GSAP choreography can tween 0 → 1 and hand back
+   to CSS (clearProps) without a jump. */
+.pc[data-powered="true"] > :not(.press) {
+  opacity: 1;
 }
 
-/* persistent soft glow over the physical power button once the PC is on */
-.buttonGlow {
-  position: absolute;
+/* power-off: lights fade rather than snap */
+.pc[data-powered="false"] > * {
+  transition: opacity 900ms ease;
+}
+
+/* momentary darkening as the button is pushed in (timeline-only) */
+.press {
+  border-radius: 50%;
   background: radial-gradient(
     circle,
-    color-mix(in srgb, var(--scene-accent-warm) 55%, transparent) 0%,
+    rgba(0, 0, 0, 0.85) 0 52%,
     transparent 70%
   );
-  opacity: 0;
-  scale: 1.7;
+  mix-blend-mode: multiply;
+}
+
+/* power LED: the plate's white symbol/ring takes on the warm LED colour… */
+.ledTint {
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffb27a 0 60%, transparent 66%);
+  mix-blend-mode: multiply;
+}
+
+/* …and casts a small, tight halo on the brushed top panel */
+.ledHalo {
+  scale: 2.1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--scene-accent-warm) 42%, transparent) 0%,
+    color-mix(in srgb, var(--scene-accent-warm) 12%, transparent) 30%,
+    transparent 60%
+  );
   mix-blend-mode: screen;
-  transition: opacity 500ms ease;
 }
 
-.pc[data-powered="true"] .buttonGlow {
-  opacity: 0.8;
-  animation: ledPulse 3.2s ease-in-out 500ms infinite;
+/* warm interior light seen through the tempered-glass side panel */
+.interior {
+  background: radial-gradient(
+    ellipse 38% 46% at 26% 52%,
+    color-mix(in srgb, var(--scene-accent-warm) 30%, transparent) 0%,
+    color-mix(in srgb, var(--scene-accent-warm) 10%, transparent) 55%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
 }
 
-@keyframes bloom {
-  0% {
-    opacity: 0;
-    scale: 1;
-  }
-  35% {
-    opacity: 0.85;
-    scale: 1.16;
-  }
-  100% {
-    opacity: 0.1;
-    scale: 1.12;
-  }
+/* light escaping around the three intake fans through the front mesh */
+.front {
+  --glow: color-mix(in srgb, var(--scene-accent-warm) 24%, transparent);
+  background:
+    radial-gradient(
+      ellipse 46% 15% at 42% 18%,
+      transparent 74%,
+      var(--glow) 88%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 46% 15% at 42% 50.6%,
+      transparent 74%,
+      var(--glow) 88%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 46% 15% at 42% 82.5%,
+      transparent 74%,
+      var(--glow) 88%,
+      transparent 100%
+    );
+  mix-blend-mode: screen;
 }
 
-@keyframes ledPulse {
-  0%,
-  100% {
-    opacity: 0.65;
-  }
-  50% {
-    opacity: 0.9;
-  }
+/* Fan motion overlay (fanMotion.ts). The plate's fan art never moves: this
+   is a static ellipse (circle squashed by fanStyle) masked to the blade ring,
+   whose children rotate. Multiply = blades only ever *shade* the art and the
+   rim light behind them, so nothing reads as a rotating texture. */
+.fan {
+  mix-blend-mode: multiply;
+  mask-image: radial-gradient(
+    closest-side,
+    transparent 50%,
+    #000 57%,
+    #000 92%,
+    transparent 99%
+  );
+}
+
+.pc[data-powered="false"] > .fan {
+  transition: opacity 2.4s ease-in;
+}
+
+.fanLayer,
+.blades,
+.blur {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+/* seven soft blade shadows — visible only at rest / low speed */
+.blades {
+  background: repeating-conic-gradient(
+    from 8deg,
+    rgba(18, 10, 6, 0) 0deg,
+    rgba(18, 10, 6, 0.5) 9deg,
+    rgba(18, 10, 6, 0.3) 24deg,
+    rgba(18, 10, 6, 0) 36deg 51.43deg
+  );
+}
+
+/* at speed the blades smear into a faint, uneven shade */
+.blur {
+  opacity: 0;
+  background: conic-gradient(
+    rgba(18, 10, 6, 0.16),
+    rgba(18, 10, 6, 0.05) 100deg,
+    rgba(18, 10, 6, 0.14) 190deg,
+    rgba(18, 10, 6, 0.04) 280deg,
+    rgba(18, 10, 6, 0.16)
+  );
+}
+
+/* faint warm spill onto the wall around the case */
+.spill {
+  scale: 1.6 1.25;
+  background: radial-gradient(
+    ellipse at 45% 50%,
+    color-mix(in srgb, var(--scene-accent-warm) 9%, transparent) 0%,
+    transparent 68%
+  );
+  mix-blend-mode: screen;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pc[data-powered="true"] .bloom {
-    animation: none;
-    opacity: 0.1;
-  }
-  .pc[data-powered="true"] .buttonGlow {
-    animation: none;
-    opacity: 0.75;
-  }
-  .buttonGlow {
+  .pc[data-powered="false"] > * {
     transition: none;
+  }
+  /* no spin under reduced motion, so no blade overlay either */
+  .fan {
+    display: none;
   }
 }

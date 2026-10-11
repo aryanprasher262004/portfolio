@@ -37,11 +37,13 @@
   z-index: 3;
   background: #050506;
   opacity: 0;
-  transition: opacity 650ms ease;
   pointer-events: none;
 }
+/* Fade only when going dark (shut down / restart). Waking is a GSAP flicker
+   (usePowerSequence) — a CSS transition here would smear it. */
 .monitor[data-awake="false"] .blackout {
   opacity: 1;
+  transition: opacity 650ms ease;
 }
 
 /* faint glass sheen */
@@ -58,7 +60,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .blackout {
+  .monitor[data-awake="false"] .blackout {
     transition: none;
   }
 }

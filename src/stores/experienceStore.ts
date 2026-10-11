@@ -34,6 +34,9 @@ interface ExperienceState {
 
   /** User action: press the power control. Only valid from idle. */
   powerOn: () => void;
+  /** Called by the scene's power-on choreography at its monitor-wake beat
+   *  (DEC-019): `poweringOn` → `booting`. No-op from any other phase. */
+  completePowerOn: () => void;
   /** Simulated OS action: replay the boot sequence (Start menu → Restart). */
   restart: () => void;
   /** Simulated OS action: power off (Start menu → Shut Down). Same as reset(). */
@@ -50,6 +53,21 @@ interface ExperienceState {
   reset: () => void;
 }
 
+/**
+ * The power-on choreography lives in the renderer (`features/scene`, DEC-019)
+ * and calls `completePowerOn()` itself. This is only a safety net so the
+ * experience can never get stuck in `poweringOn` if no scene drives it.
+ */
+const POWER_ON_FALLBACK_MS = 8000;
+let fallbackTimer: ReturnType<typeof setTimeout> | undefined;
+function armPowerOnFallback(get: () => ExperienceState) {
+  clearTimeout(fallbackTimer);
+  fallbackTimer = setTimeout(
+    () => get().completePowerOn(),
+    POWER_ON_FALLBACK_MS,
+  );
+}
+
 export const useExperienceStore = create<ExperienceState>()((set, get) => ({
   phase: "idle",
   view: "desk",
@@ -62,16 +80,14 @@ export const useExperienceStore = create<ExperienceState>()((set, get) => ({
   powerOn: () => {
     if (get().phase !== "idle") return;
     set({ phase: "poweringOn" });
-    // PC glow ramps, then the monitor wakes as we enter the boot phase.
-    setTimeout(() => {
-      if (get().phase === "poweringOn") set({ phase: "booting" });
-    }, 850);
+    armPowerOnFallback(get);
+  },
+  completePowerOn: () => {
+    if (get().phase === "poweringOn") set({ phase: "booting" });
   },
   restart: () => {
     set({ phase: "poweringOn", view: "desk" });
-    setTimeout(() => {
-      if (get().phase === "poweringOn") set({ phase: "booting" });
-    }, 850);
+    armPowerOnFallback(get);
   },
   shutDown: () => set({ phase: "idle", view: "desk" }),
 

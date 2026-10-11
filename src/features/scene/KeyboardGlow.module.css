@@ -1,0 +1,39 @@
+/* Sized to the keyboard body; draws nothing itself. */
+.glow {
+  position: absolute;
+  pointer-events: none;
+  /* blend on the tweened element itself, so a mid-fade opacity doesn't
+     isolate the pool from the desk behind it */
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+
+/* Backlight leaking from under the frame: a soft pool on the desk in front
+   of the keyboard's lip, slightly wider than the frame, brightest at the edge. */
+.glow::before {
+  content: "";
+  position: absolute;
+  left: -3%;
+  right: -3%;
+  top: 97%;
+  height: 30%;
+  background: radial-gradient(
+    ellipse 50% 70% at 50% 0%,
+    color-mix(in srgb, #ffd9b0 50%, transparent) 0%,
+    color-mix(in srgb, #ffc48a 20%, transparent) 40%,
+    transparent 100%
+  );
+}
+
+.glow[data-powered="true"] {
+  opacity: 1;
+}
+.glow[data-powered="false"] {
+  transition: opacity 700ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow[data-powered="false"] {
+    transition: none;
+  }
+}

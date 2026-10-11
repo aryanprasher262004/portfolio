@@ -367,3 +367,56 @@ migrates old `day`/`dusk` localStorage data with no special-case branch.
    `POWER_HOTSPOT_RECT` for as long as the PC stays powered.
 
 **Status:** Decided and implemented, Phase 2 UX pass.
+
+---
+
+## DEC-019 — Power-on choreography is owned by the scene; the store only holds phase
+
+**Decision:** The physical power-on sequence (button press → LED → interior
+glow → mini-display boot → keyboard light → monitor flicker-wake) is one GSAP
+timeline in `features/scene/usePowerSequence.ts`. `experienceStore.powerOn()`
+/ `restart()` now only set `phase: "poweringOn"`; the scene calls the new
+`completePowerOn()` (`poweringOn` → `booting`) at its monitor-wake beat. The
+old hard-coded 850 ms `setTimeout` in the store is gone; an 8 s store-side
+fallback (`armPowerOnFallback`, re-armed/cancelled per power-on) guarantees the
+experience can't stall if no renderer drives it.
+
+Steady on/off appearance stays in CSS (`data-powered` / `data-awake`); the
+timeline only animates the transition via `[data-fx]` / `[data-mini]` hooks
+and `clearProps` back to CSS. Every layer's CSS "on" opacity is exactly 1
+(intensity lives in gradients) so the hand-off never jumps. Reduced motion
+skips the timeline (CSS end state, wake after 250 ms). The Focus/Enter-Screen
+control is offered only in `login`/`desktop`. Power-on never moves the camera
+(DEC-014 unchanged).
+
+**Why:** Choreography is renderer-specific — a future `ThreeScene` (DEC-015)
+would drive its own lights/fans and just call `completePowerOn()`; OS/windows/
+apps remain untouched and still import nothing from `features/scene`.
+**Status:** Decided and implemented, Phase 3.1.
+
+---
+
+## DEC-020 — Phase 3 re-scoped to the physical power-on experience
+
+**Decision:** Owner-approved (2026-10-11). Phase 3 is now "Physical power-on"
+(subphases 3.1–3.8 in `ROADMAP.md`). The old Phase 3 "Environment" was largely
+delivered by Phases 1–2; its leftovers (cursor response, object highlighting,
+performance baseline) move into Phase 4, which becomes "Boot polish + audio"
+(old 4.3–4.6 and 4.10 are absorbed by the new Phase 3).
+**Status:** Decided.
+
+---
+
+## DEC-021 — Fan motion is a masked overlay; the plate's fan art never rotates
+
+**Decision:** Rotating a crop of the plate's fans was prototyped and rejected:
+the hub sits ~4 px off the ring centre and the rim highlight is painted in, so
+both visibly orbit. Instead each fan gets a static, ring-masked ellipse
+(`FAN_RINGS` + `fanStyle`: a 2·rx circle squashed by `scaleY(ry/rx)`) whose
+child layers rotate — faint multiply blade shadows that cross-fade into a soft
+motion shade at speed (`fanMotion.ts`). One endless linear GSAP rotation per fan;
+spin-up / coast-down tween its `timeScale` (continuous angle, smooth
+acceleration); a separate parent layer takes the start-up twitch. Restart keeps
+fans turning; Shut Down coasts them to rest (~2.5 s); reduced motion hides the
+overlay entirely (no motion, no static blades). No asset, no dependency.
+**Status:** Decided and implemented, Phase 3.3 (owner-approved approach).

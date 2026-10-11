@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 /**
  * Production scene configuration.
  *
@@ -60,6 +62,82 @@ export const POWER_HOTSPOT_RECT = {
   width: 0.0846,
   height: 0.0977,
 } as const;
+
+/* ---- physical power-on features (Phase 3, DEC-019) ---------------------------
+ * Measured in plate pixels (1536x1024) from the PNG master via grid-overlay
+ * crops, converted to plate fractions so they scale with the stage. */
+
+const W = PLATE.naturalWidth;
+const H = PLATE.naturalHeight;
+const pxRect = (x: number, y: number, w: number, h: number) =>
+  ({ left: x / W, top: y / H, width: w / W, height: h / H }) as const;
+
+/** The power button's round bezel (symbol ring centre ≈ 1451,252). */
+export const POWER_LED_RECT = pxRect(1437, 238, 28, 29);
+
+/** Tempered-glass side panel (perspective quad), as a clip-path polygon in
+ *  PC_RECT-relative percentages. Plate px: (1234,287) (1335,239) (1335,660)
+ *  (1234,642). */
+export const GLASS_PANEL_POLY = [
+  [1234, 287],
+  [1335, 239],
+  [1335, 660],
+  [1234, 642],
+] as const;
+
+/** Front mesh panel behind the three intake fans. x:[1367..1470] y:[305..647]. */
+export const FRONT_PANEL_RECT = pxRect(1367, 305, 103, 342);
+
+/** The three front intake fans' outer rings (plate px). They read as ellipses
+ *  (~85x98), so the motion overlay is a circle of diameter 2·rx squashed by
+ *  `scaleY(ry/rx)` — rotation stays true to the art, no wobble. */
+export const FAN_RINGS = [
+  { cx: 1410, cy: 367, rx: 42.5, ry: 49 },
+  { cx: 1411, cy: 478, rx: 42.5, ry: 49 },
+  { cx: 1410, cy: 587, rx: 42.5, ry: 49 },
+] as const;
+
+/** Square box (2·rx) centred on a fan ring, squashed vertically to its ellipse. */
+export function fanStyle(f: (typeof FAN_RINGS)[number]): CSSProperties {
+  return {
+    ...rectStyle(pxRect(f.cx - f.rx, f.cy - f.rx, f.rx * 2, f.rx * 2)),
+    transform: `scaleY(${(f.ry / f.rx).toFixed(4)})`,
+  };
+}
+
+/** The small desk device's dark screen (left edge; the right edge sits ~6px
+ *  lower — rendered with `MINI_DISPLAY_SKEW_DEG`). x:[1036..1103] y:[620..655]. */
+export const MINI_DISPLAY_RECT = pxRect(1036, 620, 67, 35);
+export const MINI_DISPLAY_SKEW_DEG = 5;
+
+/** Keyboard body (frame incl. keycaps). x:[346..904] y:[700..796]. */
+export const KEYBOARD_RECT = pxRect(346, 700, 558, 96);
+
+type PlateRect = { left: number; top: number; width: number; height: number };
+
+/** Absolute-position style for a plate-fraction rect (stage-relative %). */
+export function rectStyle(r: PlateRect): CSSProperties {
+  return {
+    left: `${r.left * 100}%`,
+    top: `${r.top * 100}%`,
+    width: `${r.width * 100}%`,
+    height: `${r.height * 100}%`,
+  };
+}
+
+/** PC_RECT-relative clip-path for a plate-px polygon. */
+export function towerPolygon(pts: readonly (readonly [number, number])[]) {
+  const x0 = PC_RECT.left * W;
+  const y0 = PC_RECT.top * H;
+  const w = PC_RECT.width * W;
+  const h = PC_RECT.height * H;
+  return `polygon(${pts
+    .map(
+      ([x, y]) =>
+        `${(((x - x0) / w) * 100).toFixed(2)}% ${(((y - y0) / h) * 100).toFixed(2)}%`,
+    )
+    .join(", ")})`;
+}
 
 /* ---- framing ---------------------------------------------------------------- */
 

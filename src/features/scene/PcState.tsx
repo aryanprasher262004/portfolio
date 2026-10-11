@@ -1,32 +1,50 @@
 import type { CSSProperties } from "react";
-import { PC_RECT, POWER_HOTSPOT_RECT } from "./sceneConfig";
+import {
+  FAN_RINGS,
+  fanStyle,
+  rectStyle,
+  FRONT_PANEL_RECT,
+  GLASS_PANEL_POLY,
+  PC_RECT,
+  POWER_LED_RECT,
+  towerPolygon,
+} from "./sceneConfig";
 import styles from "./PcState.module.css";
 
-const towerStyle: CSSProperties = {
-  left: `${PC_RECT.left * 100}%`,
-  top: `${PC_RECT.top * 100}%`,
-  width: `${PC_RECT.width * 100}%`,
-  height: `${PC_RECT.height * 100}%`,
-};
-
-const buttonStyle: CSSProperties = {
-  left: `${POWER_HOTSPOT_RECT.left * 100}%`,
-  top: `${POWER_HOTSPOT_RECT.top * 100}%`,
-  width: `${POWER_HOTSPOT_RECT.width * 100}%`,
-  height: `${POWER_HOTSPOT_RECT.height * 100}%`,
+const towerStyle = rectStyle(PC_RECT);
+const ledStyle = rectStyle(POWER_LED_RECT);
+const frontStyle = rectStyle(FRONT_PANEL_RECT);
+const fanStyles = FAN_RINGS.map(fanStyle);
+const glassStyle: CSSProperties = {
+  ...towerStyle,
+  clipPath: towerPolygon(GLASS_PANEL_POLY),
 };
 
 /**
- * Sits over the PC tower. The plate's OFF artwork is already correct/sharp —
- * no wash applied here. On power-on a warm bloom pulses once across the
- * tower, and the physical power button (baked into the plate) gets a
- * persistent soft glow for as long as the PC stays powered.
+ * The PC tower's physical light layers over the plate (which is already
+ * correctly dark when off). CSS owns the steady on/off states via
+ * `data-powered`; the power-on choreography (`usePowerSequence`, DEC-019)
+ * animates the transition between them through the `data-fx` hooks.
  */
 export function PcState({ powered }: { powered: boolean }) {
   return (
     <div className={styles.pc} data-powered={powered} aria-hidden>
-      <div className={styles.bloom} style={towerStyle} />
-      <div className={styles.buttonGlow} style={buttonStyle} />
+      <div className={styles.spill} style={towerStyle} data-fx="spill" />
+      <div className={styles.interior} style={glassStyle} data-fx="interior" />
+      <div className={styles.front} style={frontStyle} data-fx="front" />
+      {fanStyles.map((style, i) => (
+        <div key={i} className={styles.fan} style={style} data-fx="fan">
+          <div className={styles.fanLayer} data-fan-jolt>
+            <div className={styles.fanLayer} data-fan-spin>
+              <div className={styles.blades} data-fan-blades />
+              <div className={styles.blur} data-fan-blur />
+            </div>
+          </div>
+        </div>
+      ))}
+      <div className={styles.press} style={ledStyle} data-fx="press" />
+      <div className={styles.ledTint} style={ledStyle} data-fx="led" />
+      <div className={styles.ledHalo} style={ledStyle} data-fx="led" />
     </div>
   );
 }
